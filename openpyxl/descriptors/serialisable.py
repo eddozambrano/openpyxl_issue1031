@@ -151,7 +151,11 @@ class Serialisable(_Serialiasable):
                 elif obj is None:
                     continue
                 else:
-                    node = obj.to_tree(child_tag)
+                    try:
+                        node = obj.to_tree(child_tag)
+                    except AttributeError as e:
+                        node = None
+                        print(f'Warning: {e}. Node is ignored.')
                 if node is not None:
                     el.append(node)
         return el

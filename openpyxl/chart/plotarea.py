@@ -142,8 +142,11 @@ class PlotArea(Serialisable):
         for chart in self._charts:
             if isinstance(chart, (ScatterChart, BubbleChart)):
                 x, y = (axes[axId] for axId in chart.axId)
-                chart.x_axis = x
-                chart.y_axis = y
+                try:
+                    chart.x_axis = x
+                    chart.y_axis = y
+                except TypeError as e:
+                    print(f'{e} and provided {type(x)} ')
                 continue
 
             for axId in chart.axId:
