@@ -1,5 +1,7 @@
-THIS IS A COPY OF OPENPYXL https://foss.heptapod.net/openpyxl/openpyxl USE GIT INSTEAD OF MERCURIAL (Just a personal preference)
+THIS IS MY PERSONAL COPY OF OPENPYXL https://foss.heptapod.net/openpyxl/openpyxl 
+USING GIT INSTEAD OF MERCURIAL (Just a personal preference)
 
+Here the same README from the original project.
 .. image:: https://coveralls.io/repos/bitbucket/openpyxl/openpyxl/badge.svg?branch=default
     :target: https://coveralls.io/bitbucket/openpyxl/openpyxl?branch=default
     :alt: coverage status
