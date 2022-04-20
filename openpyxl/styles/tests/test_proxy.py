@@ -8,7 +8,6 @@ import pytest
 @pytest.fixture
 def dummy_object():
     class Dummy:
-
         def __init__(self, a, b, c):
             self.a = a
             self.b = b
@@ -27,7 +26,8 @@ def dummy_object():
 
 @pytest.fixture
 def proxy(dummy_object):
-    from .. proxy import StyleProxy
+    from ..proxy import StyleProxy
+
     return StyleProxy(dummy_object)
 
 

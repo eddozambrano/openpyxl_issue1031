@@ -1,21 +1,21 @@
 # Copyright (c) 2010-2021 openpyxl
-import pytest
-
 from io import BytesIO
 from zipfile import ZipFile
 
-from openpyxl.xml.functions import fromstring, tostring
+import pytest
+
 from openpyxl.tests.helper import compare_xml
+from openpyxl.xml.functions import fromstring, tostring
 
 
 @pytest.fixture
 def TableColumn():
     from ..table import TableColumn
+
     return TableColumn
 
 
 class TestTableColumn:
-
     def test_ctor(self, TableColumn):
         col = TableColumn(id=1, name="Column1")
         xml = tostring(col.to_tree())
@@ -24,7 +24,6 @@ class TestTableColumn:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, TableColumn):
         src = """
@@ -38,11 +37,11 @@ class TestTableColumn:
 @pytest.fixture
 def Table():
     from ..table import Table
+
     return Table
 
 
 class TestTable:
-
     def test_ctor(self, Table, TableColumn):
         table = Table(displayName="A_Sample_Table", ref="A1:D5")
         xml = tostring(table.to_tree())
@@ -53,7 +52,6 @@ class TestTable:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_columns(self, Table):
         table = Table(displayName="A_Sample_Table", ref="A1:D5")
@@ -74,12 +72,10 @@ class TestTable:
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 
-
     def test_column_names(self, Table):
         table = Table(displayName="A_Sample_Table", ref="A10:D14")
         table._initialise_columns()
         assert table.column_names == ["Column1", "Column2", "Column3", "Column4"]
-
 
     def test_from_xml(self, Table):
         src = """
@@ -89,14 +85,11 @@ class TestTable:
         """
         node = fromstring(src)
         table = Table.from_tree(node)
-        assert table == Table(displayName="Table1", name="Table1",
-                              ref="A1:AA27")
-
+        assert table == Table(displayName="Table1", name="Table1", ref="A1:AA27")
 
     def test_path(self, Table):
         table = Table(displayName="Table1", ref="A1:M6")
         assert table.path == "/xl/tables/table1.xml"
-
 
     def test_write(self, Table):
         out = BytesIO()
@@ -109,11 +102,11 @@ class TestTable:
 @pytest.fixture
 def TableFormula():
     from ..table import TableFormula
+
     return TableFormula
 
 
 class TestTableFormula:
-
     def test_ctor(self, TableFormula):
         formula = TableFormula()
         formula.text = "=A1*4"
@@ -123,7 +116,6 @@ class TestTableFormula:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, TableFormula):
         src = """
@@ -137,11 +129,11 @@ class TestTableFormula:
 @pytest.fixture
 def TableStyleInfo():
     from ..table import TableStyleInfo
+
     return TableStyleInfo
 
 
 class TestTableInfo:
-
     def test_ctor(self, TableStyleInfo):
         info = TableStyleInfo(name="TableStyleMedium12")
         xml = tostring(info.to_tree())
@@ -150,7 +142,6 @@ class TestTableInfo:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, TableStyleInfo):
         src = """
@@ -164,11 +155,11 @@ class TestTableInfo:
 @pytest.fixture
 def XMLColumnProps():
     from ..table import XMLColumnProps
+
     return XMLColumnProps
 
 
 class TestXMLColumnPr:
-
     def test_ctor(self, XMLColumnProps):
         col = XMLColumnProps(mapId="1", xpath="/xml/foo/element", xmlDataType="string")
         xml = tostring(col.to_tree())
@@ -178,27 +169,28 @@ class TestXMLColumnPr:
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 
-
     def test_from_xml(self, XMLColumnProps):
         src = """
         <xmlColumnPr mapId="1" xpath="/xml/foo/element" xmlDataType="string"/>
         """
         node = fromstring(src)
         col = XMLColumnProps.from_tree(node)
-        assert col == XMLColumnProps(mapId="1", xpath="/xml/foo/element", xmlDataType="string")
-
+        assert col == XMLColumnProps(
+            mapId="1", xpath="/xml/foo/element", xmlDataType="string"
+        )
 
 
 @pytest.fixture
 def TablePartList():
     from ..table import TablePartList
+
     return TablePartList
+
 
 from ..related import Related
 
 
 class TestTablePartList:
-
     def test_ctor(self, TablePartList):
         tables = TablePartList()
         tables.append(Related(id="rId1"))
@@ -210,7 +202,6 @@ class TestTablePartList:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, TablePartList):
         src = """
@@ -227,17 +218,16 @@ class TestTablePartList:
 @pytest.fixture
 def TableList():
     from ..table import TableList
+
     return TableList
 
 
 class TestTableList:
-
     def test_append(self, Table, TableList):
         tablelist = TableList()
         table1 = Table(displayName="Table1", ref="A1:C10")
         tablelist.add(table1)
         assert len(tablelist) == 1
-
 
     def test_get(self, Table, TableList):
         tablelist = TableList()
@@ -245,25 +235,21 @@ class TestTableList:
         tablelist.add(table1)
         assert table1 == tablelist["Table1"]
 
-
     def test_get_by_range(self, Table, TableList):
         tablelist = TableList()
         table1 = Table(displayName="Table1", ref="A1:D10")
         tablelist.add(table1)
-        assert True == isinstance(tablelist.get(table_range="A1:D10"),Table)
-
+        assert True == isinstance(tablelist.get(table_range="A1:D10"), Table)
 
     def test_add_type_error(self, Table, TableList):
         tablelist = TableList()
         with pytest.raises(TypeError):
             tablelist.add("Not a Table")
 
-
     def test_get_table_does_not_exists(self, Table, TableList):
         tablelist2 = TableList()
         with pytest.raises(KeyError):
-            tablelist2['NoTable']
-
+            tablelist2["NoTable"]
 
     def test_items(self, Table, TableList):
         table1 = Table(displayName="Table1", ref="A1:D10")

@@ -2,17 +2,18 @@
 
 import pytest
 
-from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
+from openpyxl.xml.functions import fromstring, tostring
+
 
 @pytest.fixture
 def RadarChart():
     from ..radar_chart import RadarChart
+
     return RadarChart
 
 
 class TestRadarChart:
-
     def test_ctor(self, RadarChart):
         chart = RadarChart()
         xml = tostring(chart.to_tree())
@@ -25,7 +26,6 @@ class TestRadarChart:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, RadarChart):
         src = """

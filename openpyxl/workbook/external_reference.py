@@ -1,12 +1,9 @@
 # Copyright (c) 2010-2021 openpyxl
 
+from openpyxl.descriptors import Sequence
+from openpyxl.descriptors.excel import Relation
 from openpyxl.descriptors.serialisable import Serialisable
-from openpyxl.descriptors import (
-    Sequence
-)
-from openpyxl.descriptors.excel import (
-    Relation,
-)
+
 
 class ExternalReference(Serialisable):
 

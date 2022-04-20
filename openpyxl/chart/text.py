@@ -1,17 +1,7 @@
 # Copyright (c) 2010-2021 openpyxl
+from openpyxl.descriptors import Alias, Sequence, Typed
 from openpyxl.descriptors.serialisable import Serialisable
-from openpyxl.descriptors import (
-    Typed,
-    Alias,
-    Sequence,
-)
-
-
-from openpyxl.drawing.text import (
-    RichTextProperties,
-    ListStyle,
-    Paragraph,
-)
+from openpyxl.drawing.text import ListStyle, Paragraph, RichTextProperties
 
 from .data_source import StrRef
 
@@ -30,15 +20,16 @@ class RichText(Serialisable):
     properties = Alias("bodyPr")
     lstStyle = Typed(expected_type=ListStyle, allow_none=True)
     p = Sequence(expected_type=Paragraph)
-    paragraphs = Alias('p')
+    paragraphs = Alias("p")
 
     __elements__ = ("bodyPr", "lstStyle", "p")
 
-    def __init__(self,
-                 bodyPr=None,
-                 lstStyle=None,
-                 p=None,
-                ):
+    def __init__(
+        self,
+        bodyPr=None,
+        lstStyle=None,
+        p=None,
+    ):
         if bodyPr is None:
             bodyPr = RichTextProperties()
         self.bodyPr = bodyPr
@@ -62,17 +53,13 @@ class Text(Serialisable):
 
     __elements__ = ("strRef", "rich")
 
-    def __init__(self,
-                 strRef=None,
-                 rich=None
-                 ):
+    def __init__(self, strRef=None, rich=None):
         self.strRef = strRef
         if rich is None:
             rich = RichText()
         self.rich = rich
 
-
     def to_tree(self, tagname=None, idx=None, namespace=None):
         if self.strRef and self.rich:
-            self.rich = None # can only have one
+            self.rich = None  # can only have one
         return super(Text, self).to_tree(tagname, idx, namespace)

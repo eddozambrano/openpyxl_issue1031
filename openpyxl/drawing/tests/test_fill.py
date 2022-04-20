@@ -2,26 +2,28 @@
 
 import pytest
 
-from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
+from openpyxl.xml.functions import fromstring, tostring
+
 
 @pytest.fixture
 def PatternFillProperties():
     from ..fill import PatternFillProperties
+
     return PatternFillProperties
 
 
 class TestPatternFillProperties:
-
     def test_ctor(self, PatternFillProperties):
-        fill = PatternFillProperties(prst="cross",)
+        fill = PatternFillProperties(
+            prst="cross",
+        )
         xml = tostring(fill.to_tree())
         expected = """
         <pattFill xmlns="http://schemas.openxmlformats.org/drawingml/2006/main" prst="cross"></pattFill>
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, PatternFillProperties):
         src = """
@@ -31,14 +33,15 @@ class TestPatternFillProperties:
         fill = PatternFillProperties.from_tree(node)
         assert fill == PatternFillProperties("dashHorz")
 
+
 @pytest.fixture
 def RelativeRect():
     from ..fill import RelativeRect
+
     return RelativeRect
 
 
 class TestRelativeRect:
-
     def test_ctor(self, RelativeRect):
         fill = RelativeRect(10, 15, 20, 25)
         xml = tostring(fill.to_tree())
@@ -48,7 +51,6 @@ class TestRelativeRect:
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 
-
     def test_from_xml(self, RelativeRect):
         src = """
         <rect b="25" l="10" r="20" t="15" />
@@ -56,7 +58,6 @@ class TestRelativeRect:
         node = fromstring(src)
         fill = RelativeRect.from_tree(node)
         assert fill == RelativeRect(10, 15, 20, 25)
-
 
     def test_from_src_rect(self, RelativeRect):
         src = """
@@ -70,11 +71,11 @@ class TestRelativeRect:
 @pytest.fixture
 def StretchInfoProperties():
     from ..fill import StretchInfoProperties
+
     return StretchInfoProperties
 
 
 class TestStretchInfoProperties:
-
     def test_ctor(self, StretchInfoProperties):
         fill = StretchInfoProperties()
         xml = tostring(fill.to_tree())
@@ -85,7 +86,6 @@ class TestStretchInfoProperties:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, StretchInfoProperties):
         src = """
@@ -99,11 +99,11 @@ class TestStretchInfoProperties:
 @pytest.fixture
 def GradientStop():
     from ..fill import GradientStop
+
     return GradientStop
 
 
 class TestGradientStop:
-
     def test_ctor(self, GradientStop):
         fill = GradientStop(pos=0, prstClr="blue")
         xml = tostring(fill.to_tree())
@@ -114,7 +114,6 @@ class TestGradientStop:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, GradientStop):
         src = """
@@ -130,11 +129,11 @@ class TestGradientStop:
 @pytest.fixture
 def LinearShadeProperties():
     from ..fill import LinearShadeProperties
+
     return LinearShadeProperties
 
 
 class TestLinearShadeProperties:
-
     def test_ctor(self, LinearShadeProperties):
         fill = LinearShadeProperties(ang=0, scaled=True)
         xml = tostring(fill.to_tree())
@@ -143,7 +142,6 @@ class TestLinearShadeProperties:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, LinearShadeProperties):
         src = """
@@ -157,11 +155,11 @@ class TestLinearShadeProperties:
 @pytest.fixture
 def PathShadeProperties():
     from ..fill import PathShadeProperties
+
     return PathShadeProperties
 
 
 class PathShadeProperties:
-
     def test_ctor(self, PathShadeProperties):
         fill = PathShadeProperties(path="circle")
         xml = tostring(fill.to_tree())
@@ -170,7 +168,6 @@ class PathShadeProperties:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, PathShadeProperties):
         src = """
@@ -184,11 +181,11 @@ class PathShadeProperties:
 @pytest.fixture
 def GradientFillProperties():
     from ..fill import GradientFillProperties
+
     return GradientFillProperties
 
 
 class TestGradientFillProperties:
-
     def test_ctor(self, GradientFillProperties):
         fill = GradientFillProperties(flip="xy")
         xml = tostring(fill.to_tree())
@@ -197,7 +194,6 @@ class TestGradientFillProperties:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, GradientFillProperties):
         src = """
@@ -211,11 +207,11 @@ class TestGradientFillProperties:
 @pytest.fixture
 def Blip():
     from ..fill import Blip
+
     return Blip
 
 
 class TestBlip:
-
     def test_ctor(self, Blip):
         fill = Blip(embed="rId1")
         xml = tostring(fill.to_tree())
@@ -225,7 +221,6 @@ class TestBlip:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, Blip):
         src = """
@@ -239,11 +234,11 @@ class TestBlip:
 @pytest.fixture
 def BlipFillProperties():
     from ..fill import BlipFillProperties
+
     return BlipFillProperties
 
 
 class TestBlipFillProperties:
-
     def test_ctor(self, BlipFillProperties):
         fill = BlipFillProperties()
         xml = tostring(fill.to_tree())
@@ -256,7 +251,6 @@ class TestBlipFillProperties:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, BlipFillProperties):
         src = """

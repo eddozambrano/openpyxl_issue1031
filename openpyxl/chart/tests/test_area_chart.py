@@ -2,19 +2,20 @@
 
 import pytest
 
-from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
+from openpyxl.xml.functions import fromstring, tostring
+
 from .. import Series
 
 
 @pytest.fixture
 def AreaChart():
     from ..area_chart import AreaChart
+
     return AreaChart
 
 
 class TestAreaChart:
-
     def test_ctor(self, AreaChart):
         chart = AreaChart()
         xml = tostring(chart.to_tree())
@@ -28,7 +29,6 @@ class TestAreaChart:
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 
-
     def test_from_xml(self, AreaChart):
         src = """
          <areaChart>
@@ -41,7 +41,6 @@ class TestAreaChart:
         node = fromstring(src)
         chart = AreaChart.from_tree(node)
         assert chart == AreaChart(grouping="percentStacked", varyColors=True)
-
 
     def test_write(self, AreaChart):
         s1 = Series(values="Sheet1!$A$1:$A$12")
@@ -123,11 +122,11 @@ class TestAreaChart:
 @pytest.fixture
 def AreaChart3D():
     from ..area_chart import AreaChart3D
+
     return AreaChart3D
 
 
 class TestAreaChart3D:
-
     def test_ctor(self, AreaChart3D):
         chart = AreaChart3D()
         xml = tostring(chart.to_tree())
@@ -141,7 +140,6 @@ class TestAreaChart3D:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, AreaChart3D):
         src = """

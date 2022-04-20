@@ -2,15 +2,14 @@
 
 import pytest
 
-from openpyxl.xml.functions import tostring
-
 from openpyxl.tests.helper import compare_xml
+from openpyxl.xml.functions import tostring
 
 
 class TestDrawing(object):
-
     def setup(self):
         from ..drawing import Drawing
+
         self.drawing = Drawing()
 
     def test_ctor(self):
@@ -68,7 +67,6 @@ class TestDrawing(object):
         dims = d.get_emu_dimensions()
         assert dims == (0, 0, 200025, 1828800)
 
-
     @pytest.mark.pil_required
     def test_absolute_anchor(self):
         node = self.drawing.anchor
@@ -83,10 +81,9 @@ class TestDrawing(object):
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 
-
     @pytest.mark.pil_required
     def test_onecell_anchor(self):
-        self.drawing.anchortype =  "oneCell"
+        self.drawing.anchortype = "oneCell"
         node = self.drawing.anchor
         xml = tostring(node.to_tree())
         expected = """

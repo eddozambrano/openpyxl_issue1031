@@ -1,24 +1,14 @@
 # Copyright (c) 2010-2021 openpyxl
 
+from openpyxl.chart.shapes import GraphicalProperties
+from openpyxl.descriptors import Alias, Bool, Integer, NoneSet, Set, String, Typed
+from openpyxl.descriptors.excel import ExtensionList as OfficeArtExtensionList
+from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.xml.constants import DRAWING_NS
 
-from openpyxl.descriptors.serialisable import Serialisable
-from openpyxl.descriptors import (
-    Typed,
-    Bool,
-    NoneSet,
-    Integer,
-    Set,
-    String,
-    Alias,
-)
-from openpyxl.descriptors.excel import ExtensionList as OfficeArtExtensionList
-
-from openpyxl.chart.shapes import GraphicalProperties
-
-from .fill import RelativeRect, BlipFillProperties
-from .properties import NonVisualDrawingProps, NonVisualGroupDrawingShapeProps
+from .fill import BlipFillProperties, RelativeRect
 from .geometry import ShapeStyle
+from .properties import NonVisualDrawingProps, NonVisualGroupDrawingShapeProps
 
 
 class PictureLocking(Serialisable):
@@ -26,7 +16,7 @@ class PictureLocking(Serialisable):
     tagname = "picLocks"
     namespace = DRAWING_NS
 
-    #Using attribute group AG_Locking
+    # Using attribute group AG_Locking
     noCrop = Bool(allow_none=True)
     noGrp = Bool(allow_none=True)
     noSelect = Bool(allow_none=True)
@@ -42,20 +32,21 @@ class PictureLocking(Serialisable):
 
     __elements__ = ()
 
-    def __init__(self,
-                 noCrop=None,
-                 noGrp=None,
-                 noSelect=None,
-                 noRot=None,
-                 noChangeAspect=None,
-                 noMove=None,
-                 noResize=None,
-                 noEditPoints=None,
-                 noAdjustHandles=None,
-                 noChangeArrowheads=None,
-                 noChangeShapeType=None,
-                 extLst=None,
-                ):
+    def __init__(
+        self,
+        noCrop=None,
+        noGrp=None,
+        noSelect=None,
+        noRot=None,
+        noChangeAspect=None,
+        noMove=None,
+        noResize=None,
+        noEditPoints=None,
+        noAdjustHandles=None,
+        noChangeArrowheads=None,
+        noChangeShapeType=None,
+        extLst=None,
+    ):
         self.noCrop = noCrop
         self.noGrp = noGrp
         self.noSelect = noSelect
@@ -79,11 +70,12 @@ class NonVisualPictureProperties(Serialisable):
 
     __elements__ = ("picLocks",)
 
-    def __init__(self,
-                 preferRelativeResize=None,
-                 picLocks=None,
-                 extLst=None,
-                ):
+    def __init__(
+        self,
+        preferRelativeResize=None,
+        picLocks=None,
+        extLst=None,
+    ):
         self.preferRelativeResize = preferRelativeResize
         self.picLocks = picLocks
 
@@ -92,15 +84,20 @@ class PictureNonVisual(Serialisable):
 
     tagname = "nvPicPr"
 
-    cNvPr = Typed(expected_type=NonVisualDrawingProps, )
-    cNvPicPr = Typed(expected_type=NonVisualPictureProperties, )
+    cNvPr = Typed(
+        expected_type=NonVisualDrawingProps,
+    )
+    cNvPicPr = Typed(
+        expected_type=NonVisualPictureProperties,
+    )
 
     __elements__ = ("cNvPr", "cNvPicPr")
 
-    def __init__(self,
-                 cNvPr=None,
-                 cNvPicPr=None,
-                ):
+    def __init__(
+        self,
+        cNvPr=None,
+        cNvPicPr=None,
+    ):
         if cNvPr is None:
             cNvPr = NonVisualDrawingProps(id=0, name="Image 1", descr="Name of file")
         self.cNvPr = cNvPr
@@ -109,30 +106,35 @@ class PictureNonVisual(Serialisable):
         self.cNvPicPr = cNvPicPr
 
 
-
-
 class PictureFrame(Serialisable):
 
     tagname = "pic"
 
     macro = String(allow_none=True)
     fPublished = Bool(allow_none=True)
-    nvPicPr = Typed(expected_type=PictureNonVisual, )
-    blipFill = Typed(expected_type=BlipFillProperties, )
-    spPr = Typed(expected_type=GraphicalProperties, )
-    graphicalProperties = Alias('spPr')
+    nvPicPr = Typed(
+        expected_type=PictureNonVisual,
+    )
+    blipFill = Typed(
+        expected_type=BlipFillProperties,
+    )
+    spPr = Typed(
+        expected_type=GraphicalProperties,
+    )
+    graphicalProperties = Alias("spPr")
     style = Typed(expected_type=ShapeStyle, allow_none=True)
 
     __elements__ = ("nvPicPr", "blipFill", "spPr", "style")
 
-    def __init__(self,
-                 macro=None,
-                 fPublished=None,
-                 nvPicPr=None,
-                 blipFill=None,
-                 spPr=None,
-                 style=None,
-                ):
+    def __init__(
+        self,
+        macro=None,
+        fPublished=None,
+        nvPicPr=None,
+        blipFill=None,
+        spPr=None,
+        style=None,
+    ):
         self.macro = macro
         self.fPublished = fPublished
         if nvPicPr is None:
@@ -145,4 +147,3 @@ class PictureFrame(Serialisable):
             spPr = GraphicalProperties()
         self.spPr = spPr
         self.style = style
-

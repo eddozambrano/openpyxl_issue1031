@@ -2,20 +2,19 @@
 
 import pytest
 
-from openpyxl.xml.functions import fromstring, tostring
-from openpyxl.tests.helper import compare_xml
-
 from openpyxl.drawing.spreadsheet_drawing import AnchorMarker
+from openpyxl.tests.helper import compare_xml
+from openpyxl.xml.functions import fromstring, tostring
 
 
 @pytest.fixture
 def ObjectAnchor():
     from ..ole import ObjectAnchor
+
     return ObjectAnchor
 
 
 class TestObjectAnchor:
-
     def test_ctor(self, ObjectAnchor):
         _from = AnchorMarker()
         to = AnchorMarker()
@@ -40,7 +39,6 @@ class TestObjectAnchor:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, ObjectAnchor):
         src = """

@@ -1,27 +1,24 @@
 # Copyright (c) 2010-2021 openpyxl
-import pytest
-
 from io import BytesIO
 from zipfile import ZipFile
 
-from openpyxl.packaging.manifest import Manifest
-from openpyxl.xml.functions import fromstring, tostring
-from openpyxl.tests.helper import compare_xml
+import pytest
 
-from .test_fields import (
-    Index,
-    Number,
-    Text,
-)
+from openpyxl.packaging.manifest import Manifest
+from openpyxl.tests.helper import compare_xml
+from openpyxl.xml.functions import fromstring, tostring
+
+from .test_fields import Index, Number, Text
+
 
 @pytest.fixture
 def Record():
     from ..record import Record
+
     return Record
 
 
 class TestRecord:
-
     def test_ctor(self, Record, Number, Text, Index):
         n = [Number(v=1), Number(v=25)]
         s = [Text(v="2014-03-24")]
@@ -41,7 +38,6 @@ class TestRecord:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, Record, Number, Text, Index):
         src = """
@@ -73,11 +69,11 @@ class TestRecord:
 @pytest.fixture
 def RecordList():
     from ..record import RecordList
+
     return RecordList
 
 
 class TestRecordList:
-
     def test_ctor(self, RecordList):
         cache = RecordList()
         xml = tostring(cache.to_tree())
@@ -88,7 +84,6 @@ class TestRecordList:
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 
-
     def test_from_xml(self, RecordList):
         src = """
         <pivotCacheRecords count="0" />
@@ -96,7 +91,6 @@ class TestRecordList:
         node = fromstring(src)
         cache = RecordList.from_tree(node)
         assert cache == RecordList()
-
 
     def test_write(self, RecordList):
         out = BytesIO()

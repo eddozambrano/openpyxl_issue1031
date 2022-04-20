@@ -1,17 +1,18 @@
 # Copyright (c) 2010-2021 openpyxl
 import pytest
 
-from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
+from openpyxl.xml.functions import fromstring, tostring
+
 
 @pytest.fixture
 def WorkbookProperties():
     from ..properties import WorkbookProperties
+
     return WorkbookProperties
 
 
 class TestWorkbookProperties:
-
     def test_ctor(self, WorkbookProperties):
         props = WorkbookProperties()
         xml = tostring(props.to_tree())
@@ -20,7 +21,6 @@ class TestWorkbookProperties:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, WorkbookProperties):
         src = """
@@ -34,11 +34,11 @@ class TestWorkbookProperties:
 @pytest.fixture
 def CalcProperties():
     from ..properties import CalcProperties
+
     return CalcProperties
 
 
 class TestCalcProperties:
-
     def test_ctor(self, CalcProperties):
         calc = CalcProperties()
         xml = tostring(calc.to_tree())
@@ -47,7 +47,6 @@ class TestCalcProperties:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, CalcProperties):
         src = """
@@ -61,11 +60,11 @@ class TestCalcProperties:
 @pytest.fixture
 def FileVersion():
     from ..properties import FileVersion
+
     return FileVersion
 
 
 class TestFileVersion:
-
     def test_ctor(self, FileVersion):
         prop = FileVersion()
         xml = tostring(prop.to_tree())
@@ -74,7 +73,6 @@ class TestFileVersion:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, FileVersion):
         src = """

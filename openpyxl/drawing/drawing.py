@@ -1,41 +1,36 @@
 from __future__ import division
-# Copyright (c) 2010-2021 openpyxl
 
 import math
 
 from openpyxl.compat import deprecated
+from openpyxl.styles.colors import BLACK, WHITE, Color
+from openpyxl.utils.units import EMU_to_pixels, pixels_to_EMU, short_color
 
-from openpyxl.styles.colors import Color, BLACK, WHITE
-from openpyxl.utils.units import (
-    pixels_to_EMU,
-    EMU_to_pixels,
-    short_color,
-)
+# Copyright (c) 2010-2021 openpyxl
 
 
 class Drawing(object):
-    """ a drawing object - eg container for shapes or charts
-        we assume user specifies dimensions in pixels; units are
-        converted to EMU in the drawing part
+    """a drawing object - eg container for shapes or charts
+    we assume user specifies dimensions in pixels; units are
+    converted to EMU in the drawing part
     """
 
     count = 0
 
     def __init__(self):
 
-        self.name = ''
-        self.description = ''
+        self.name = ""
+        self.description = ""
         self.coordinates = ((1, 2), (16, 8))
         self.left = 0
         self.top = 0
-        self._width = 21 # default in px
-        self._height = 192 #default in px
+        self._width = 21  # default in px
+        self._height = 192  # default in px
         self.resize_proportional = False
         self.rotation = 0
         self.anchortype = "absolute"
-        self.anchorcol = 0 # left cell
-        self.anchorrow = 0 # top row
-
+        self.anchorcol = 0  # left cell
+        self.anchorrow = 0  # top row
 
     @property
     def width(self):
@@ -74,18 +69,19 @@ class Drawing(object):
 
     @deprecated("Private method used when serialising")
     def get_emu_dimensions(self):
-        """ return (x, y, w, h) in EMU """
+        """return (x, y, w, h) in EMU"""
 
-        return (pixels_to_EMU(self.left), pixels_to_EMU(self.top),
-            pixels_to_EMU(self._width), pixels_to_EMU(self._height))
-
+        return (
+            pixels_to_EMU(self.left),
+            pixels_to_EMU(self.top),
+            pixels_to_EMU(self._width),
+            pixels_to_EMU(self._height),
+        )
 
     @property
     def anchor(self):
-        from .spreadsheet_drawing import (
-            OneCellAnchor,
-            TwoCellAnchor,
-            AbsoluteAnchor)
+        from .spreadsheet_drawing import AbsoluteAnchor, OneCellAnchor, TwoCellAnchor
+
         if self.anchortype == "absolute":
             anchor = AbsoluteAnchor()
             anchor.pos.x = pixels_to_EMU(self.left)

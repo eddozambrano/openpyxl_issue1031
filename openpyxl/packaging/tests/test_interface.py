@@ -2,6 +2,7 @@
 
 import pytest
 
+
 def test_interface():
     from ..interface import ISerialisableFile
 

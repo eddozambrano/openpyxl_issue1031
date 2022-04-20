@@ -3,7 +3,7 @@ Sample bubble chart
 """
 
 from openpyxl import Workbook
-from openpyxl.chart import Series, Reference, BubbleChart
+from openpyxl.chart import BubbleChart, Reference, Series
 
 wb = Workbook()
 ws = wb.active
@@ -25,7 +25,7 @@ for row in rows:
     ws.append(row)
 
 chart = BubbleChart()
-chart.style = 18 # use a preset style
+chart.style = 18  # use a preset style
 
 # add the first series of data
 xvalues = Reference(ws, min_col=1, min_row=2, max_row=5)

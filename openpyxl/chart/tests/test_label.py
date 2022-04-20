@@ -2,18 +2,18 @@
 
 import pytest
 
-from openpyxl.xml.functions import tostring, fromstring
 from openpyxl.tests.helper import compare_xml
+from openpyxl.xml.functions import fromstring, tostring
 
 
 @pytest.fixture
 def DataLabelList():
     from ..label import DataLabelList
+
     return DataLabelList
 
 
 class TestDataLabeList:
-
     def test_ctor(self, DataLabelList):
         labels = DataLabelList(numFmt="0.0%")
         xml = tostring(labels.to_tree())
@@ -24,7 +24,6 @@ class TestDataLabeList:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, DataLabelList):
         src = """
@@ -51,11 +50,11 @@ class TestDataLabeList:
 @pytest.fixture
 def DataLabel():
     from ..label import DataLabel
+
     return DataLabel
 
 
 class TestDataLabel:
-
     def test_ctor(self, DataLabel):
         label = DataLabel()
         xml = tostring(label.to_tree())
@@ -66,7 +65,6 @@ class TestDataLabel:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, DataLabel):
         src = """

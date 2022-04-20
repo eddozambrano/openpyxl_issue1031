@@ -1,19 +1,19 @@
 # Copyright (c) 2010-2021 openpyxl
 
 import pytest
-from openpyxl.tests.helper import compare_xml
 
-from openpyxl.xml.functions import tostring, fromstring
+from openpyxl.tests.helper import compare_xml
+from openpyxl.xml.functions import fromstring, tostring
 
 
 @pytest.fixture
 def SheetProtection():
     from ..protection import SheetProtection
+
     return SheetProtection
 
 
 class TestSheetProtection:
-
     def test_ctor(self, SheetProtection):
         prot = SheetProtection()
         xml = tostring(prot.to_tree())
@@ -26,7 +26,6 @@ class TestSheetProtection:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_other_algorithm(self, SheetProtection):
         expected = """
@@ -43,8 +42,6 @@ class TestSheetProtection:
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 
-
-
     def test_bool(self, SheetProtection):
         prot = SheetProtection()
         assert bool(prot) is False
@@ -57,11 +54,13 @@ def test_ctor_with_password(SheetProtection):
     assert prot.password == "DAA7"
 
 
-@pytest.mark.parametrize("password, already_hashed, value",
-                         [
-                             ('secret', False, 'DAA7'),
-                             ('secret', True, 'secret'),
-                         ])
+@pytest.mark.parametrize(
+    "password, already_hashed, value",
+    [
+        ("secret", False, "DAA7"),
+        ("secret", True, "secret"),
+    ],
+)
 def test_explicit_password(SheetProtection, password, already_hashed, value):
     prot = SheetProtection()
     prot.set_password(password, already_hashed)

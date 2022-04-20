@@ -3,20 +3,16 @@
 import datetime
 
 import pytest
-from openpyxl.tests.helper import compare_xml
 
-from openpyxl.xml.constants import DCTERMS_PREFIX, DCTERMS_NS, XSI_NS
-from openpyxl.xml.functions import (
-    fromstring,
-    tostring,
-    register_namespace,
-    NS_REGEX,
-)
+from openpyxl.tests.helper import compare_xml
+from openpyxl.xml.constants import DCTERMS_NS, DCTERMS_PREFIX, XSI_NS
+from openpyxl.xml.functions import NS_REGEX, fromstring, register_namespace, tostring
 
 
 @pytest.fixture()
 def SampleProperties():
-    from .. core import DocumentProperties
+    from ..core import DocumentProperties
+
     props = DocumentProperties()
     props.keywords = "one, two, three"
     props.created = datetime.datetime(2010, 4, 1, 20, 30, 00)
@@ -24,7 +20,7 @@ def SampleProperties():
     props.lastPrinted = datetime.datetime(2014, 10, 14, 10, 30)
     props.category = "The category"
     props.contentStatus = "The status"
-    props.creator = 'TEST_USER'
+    props.creator = "TEST_USER"
     props.lastModifiedBy = "SOMEBODY"
     props.revision = "0"
     props.version = "2.5"
@@ -77,6 +73,7 @@ def test_from_tree(datadir, SampleProperties):
 
 def test_qualified_datetime():
     from ..core import QualifiedDateTime
+
     dt = QualifiedDateTime()
     tree = dt.to_tree("time", datetime.datetime(2015, 7, 20, 12, 30, 00, 123456))
     xml = tostring(tree)
@@ -89,7 +86,7 @@ def test_qualified_datetime():
     assert diff is None, diff
 
 
-@pytest.fixture(params=['abc', 'dct', 'dcterms', 'xyz'])
+@pytest.fixture(params=["abc", "dct", "dcterms", "xyz"])
 def dcterms_prefix(request):
     register_namespace(request.param, DCTERMS_NS)
     yield request.param
@@ -99,9 +96,10 @@ def dcterms_prefix(request):
 @pytest.mark.no_pypy
 def test_qualified_datetime_ns(dcterms_prefix):
     from ..core import QualifiedDateTime
+
     dt = QualifiedDateTime()
     tree = dt.to_tree("time", datetime.datetime(2015, 7, 20, 12, 30, 00, 987654))
-    xml = tostring(tree) # serialise to make remove QName
+    xml = tostring(tree)  # serialise to make remove QName
     tree = fromstring(xml)
     xsi = tree.attrib["{%s}type" % XSI_NS]
     prefix = xsi.split(":")[0]

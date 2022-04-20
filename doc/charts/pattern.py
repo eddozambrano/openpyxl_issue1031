@@ -1,8 +1,7 @@
 from openpyxl import Workbook
 from openpyxl.chart import BarChart, Reference
 from openpyxl.chart.marker import DataPoint
-
-from openpyxl.drawing.fill import PatternFillProperties, ColorChoice
+from openpyxl.drawing.fill import ColorChoice, PatternFillProperties
 
 wb = Workbook()
 ws = wb.active
@@ -30,7 +29,7 @@ c.title = "Chart with patterns"
 
 # set a pattern for the whole series
 series = c.series[0]
-fill =  PatternFillProperties(prst="pct5")
+fill = PatternFillProperties(prst="pct5")
 fill.foreground = ColorChoice(prstClr="red")
 fill.background = ColorChoice(prstClr="blue")
 series.graphicalProperties.pattFill = fill

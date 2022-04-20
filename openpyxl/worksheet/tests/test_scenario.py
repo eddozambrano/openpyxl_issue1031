@@ -1,17 +1,18 @@
 # Copyright (c) 2010-2021 openpyxl
 import pytest
 
-from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
+from openpyxl.xml.functions import fromstring, tostring
+
 
 @pytest.fixture
 def InputCells():
     from ..scenario import InputCells
+
     return InputCells
 
 
 class TestInputCells:
-
     def test_ctor(self, InputCells):
         fut = InputCells(r="B2", val="50000")
         xml = tostring(fut.to_tree())
@@ -20,7 +21,6 @@ class TestInputCells:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, InputCells):
         src = """
@@ -34,11 +34,11 @@ class TestInputCells:
 @pytest.fixture
 def Scenario():
     from ..scenario import Scenario
+
     return Scenario
 
 
 class TestScenario:
-
     def test_ctor(self, Scenario, InputCells):
         c1 = InputCells(r="B2", val="50000")
         c2 = InputCells(r="B3", val="12200")
@@ -52,7 +52,6 @@ class TestScenario:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, Scenario, InputCells):
         src = """
@@ -71,11 +70,11 @@ class TestScenario:
 @pytest.fixture
 def ScenarioList():
     from ..scenario import ScenarioList
+
     return ScenarioList
 
 
 class TestScenarios:
-
     def test_ctor(self, ScenarioList, Scenario, InputCells):
         c1 = InputCells(r="B2", val="50000")
         s = Scenario(name="Worst case", inputCells=[c1], locked=True, user="User")
@@ -90,7 +89,6 @@ class TestScenarios:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, ScenarioList, Scenario, InputCells):
         src = """

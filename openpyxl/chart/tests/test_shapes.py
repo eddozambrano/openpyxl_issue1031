@@ -2,17 +2,18 @@
 
 import pytest
 
-from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
+from openpyxl.xml.functions import fromstring, tostring
+
 
 @pytest.fixture
 def GraphicalProperties():
     from ..shapes import GraphicalProperties
+
     return GraphicalProperties
 
 
 class TestShapeProperties:
-
     def test_ctor(self, GraphicalProperties):
         shapes = GraphicalProperties()
         xml = tostring(shapes.to_tree())
@@ -25,7 +26,6 @@ class TestShapeProperties:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, GraphicalProperties):
         src = """

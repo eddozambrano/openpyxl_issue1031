@@ -2,18 +2,18 @@
 
 import pytest
 
-from openpyxl.xml.functions import tostring, fromstring
 from openpyxl.tests.helper import compare_xml
+from openpyxl.xml.functions import fromstring, tostring
 
 
 @pytest.fixture
 def FilterColumn():
-    from .. filters import FilterColumn
+    from ..filters import FilterColumn
+
     return FilterColumn
 
 
 class TestFilterColumn:
-
     def test_ctor(self, FilterColumn, Filters):
         filters = Filters(blank=True, filter=["0"])
         col = FilterColumn(colId=5, filters=filters)
@@ -27,7 +27,6 @@ class TestFilterColumn:
         xml = tostring(col.to_tree())
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, FilterColumn, Filters):
         xml = """
@@ -45,21 +44,20 @@ class TestFilterColumn:
 
 @pytest.fixture
 def SortCondition():
-    from .. filters import SortCondition
+    from ..filters import SortCondition
+
     return SortCondition
 
 
 class TestSortCondition:
-
     def test_ctor(self, SortCondition):
-        cond = SortCondition(ref='A2:A3', descending=True)
+        cond = SortCondition(ref="A2:A3", descending=True)
         expected = """
         <sortCondition descending="1" ref="A2:A3"></sortCondition>
         """
         xml = tostring(cond.to_tree())
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, SortCondition):
         xml = """
@@ -72,21 +70,20 @@ class TestSortCondition:
 
 @pytest.fixture
 def AutoFilter():
-    from .. filters import AutoFilter
+    from ..filters import AutoFilter
+
     return AutoFilter
 
 
 class TestAutoFilter:
-
     def test_ctor(self, AutoFilter):
-        af = AutoFilter('A2:A3')
+        af = AutoFilter("A2:A3")
         expected = """
         <autoFilter ref="A2:A3" />
         """
         xml = tostring(af.to_tree())
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, AutoFilter):
         xml = """
@@ -96,9 +93,8 @@ class TestAutoFilter:
         af = AutoFilter.from_tree(node)
         assert af == AutoFilter(ref="A2:A3")
 
-
     def test_add_filter_column(self, AutoFilter):
-        af = AutoFilter('A1:F1')
+        af = AutoFilter("A1:F1")
         af.add_filter_column(5, ["0"], blank=True)
         expected = """
         <autoFilter ref="A1:F1">
@@ -113,10 +109,9 @@ class TestAutoFilter:
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 
-
     def test_add_sort_condition(self, AutoFilter):
-        af = AutoFilter('A2:A3')
-        af.add_sort_condition('A2:A3', descending=True)
+        af = AutoFilter("A2:A3")
+        af.add_sort_condition("A2:A3", descending=True)
         expected = """
         <autoFilter ref="A2:A3">
             <sortState ref="A2:A3">
@@ -128,21 +123,19 @@ class TestAutoFilter:
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 
-
     def test_bool(self, AutoFilter):
-        assert bool(AutoFilter('A2:A3')) is True
+        assert bool(AutoFilter("A2:A3")) is True
         assert bool(AutoFilter()) is False
-
 
 
 @pytest.fixture
 def SortState():
     from ..filters import SortState
+
     return SortState
 
 
 class TestSortState:
-
     def test_ctor(self, SortState):
         sort = SortState(ref="A1:D5")
         xml = tostring(sort.to_tree())
@@ -151,7 +144,6 @@ class TestSortState:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, SortState):
         src = """
@@ -163,7 +155,6 @@ class TestSortState:
         sort = SortState.from_tree(node)
         assert sort.ref == "B1:B3"
 
-
     def test_bool(self, SortState):
         assert bool(SortState()) is False
         assert bool(SortState(ref="B4:B8")) is True
@@ -172,11 +163,11 @@ class TestSortState:
 @pytest.fixture
 def IconFilter():
     from ..filters import IconFilter
+
     return IconFilter
 
 
 class TestIconFilter:
-
     def test_ctor(self, IconFilter):
         flt = IconFilter(iconSet="3Flags")
         xml = tostring(flt.to_tree())
@@ -185,7 +176,6 @@ class TestIconFilter:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, IconFilter):
         src = """
@@ -199,11 +189,11 @@ class TestIconFilter:
 @pytest.fixture
 def ColorFilter():
     from ..filters import ColorFilter
+
     return ColorFilter
 
 
 class TestColorFilter:
-
     def test_ctor(self, ColorFilter):
         flt = ColorFilter()
         xml = tostring(flt.to_tree())
@@ -212,7 +202,6 @@ class TestColorFilter:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, ColorFilter):
         src = """
@@ -226,11 +215,11 @@ class TestColorFilter:
 @pytest.fixture
 def DynamicFilter():
     from ..filters import DynamicFilter
+
     return DynamicFilter
 
 
 class TestDynamicFilter:
-
     def test_ctor(self, DynamicFilter):
         flt = DynamicFilter(type="aboveAverage")
         xml = tostring(flt.to_tree())
@@ -239,7 +228,6 @@ class TestDynamicFilter:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, DynamicFilter):
         src = """
@@ -253,11 +241,11 @@ class TestDynamicFilter:
 @pytest.fixture
 def CustomFilter():
     from ..filters import CustomFilter
+
     return CustomFilter
 
 
 class TestCustomFilter:
-
     def test_ctor(self, CustomFilter):
         fut = CustomFilter(operator="greaterThanOrEqual", val="0.2")
         xml = tostring(fut.to_tree())
@@ -266,7 +254,6 @@ class TestCustomFilter:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, CustomFilter):
         src = """
@@ -280,11 +267,11 @@ class TestCustomFilter:
 @pytest.fixture
 def CustomFilters():
     from ..filters import CustomFilters
+
     return CustomFilters
 
 
 class TestCustomFilters:
-
     def test_ctor(self, CustomFilters):
         fut = CustomFilters(_and=True)
         xml = tostring(fut.to_tree())
@@ -293,7 +280,6 @@ class TestCustomFilters:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, CustomFilters):
         src = """
@@ -307,11 +293,11 @@ class TestCustomFilters:
 @pytest.fixture
 def Top10():
     from ..filters import Top10
+
     return Top10
 
 
 class TestTop10:
-
     def test_ctor(self, Top10):
         flt = Top10(percent=1, val=5, filterVal=6)
         xml = tostring(flt.to_tree())
@@ -320,7 +306,6 @@ class TestTop10:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, Top10):
         src = """
@@ -334,11 +319,11 @@ class TestTop10:
 @pytest.fixture
 def DateGroupItem():
     from ..filters import DateGroupItem
+
     return DateGroupItem
 
 
 class TestDateGroupItem:
-
     def test_ctor(self, DateGroupItem):
         flt = DateGroupItem(dateTimeGrouping="day", year=2006, month=1, day=2)
         xml = tostring(flt.to_tree())
@@ -347,7 +332,6 @@ class TestDateGroupItem:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, DateGroupItem):
         src = """
@@ -361,11 +345,11 @@ class TestDateGroupItem:
 @pytest.fixture
 def Filters():
     from ..filters import Filters
+
     return Filters
 
 
 class TestFilters:
-
     def test_ctor(self, Filters):
         flt = Filters(calendarType="gregorian")
         xml = tostring(flt.to_tree())
@@ -374,7 +358,6 @@ class TestFilters:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_write_filters(self, Filters):
         flt = Filters()
@@ -389,7 +372,6 @@ class TestFilters:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, Filters):
         src = """

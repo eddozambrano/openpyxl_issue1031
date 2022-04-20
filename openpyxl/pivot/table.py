@@ -1,32 +1,26 @@
 # Copyright (c) 2010-2021 openpyxl
 
-from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.descriptors import (
-    Typed,
-    Integer,
-    NoneSet,
-    Set,
-    Float,
-    Bool,
-    DateTime,
-    String,
     Alias,
     Bool,
+    DateTime,
+    Float,
+    Integer,
+    NoneSet,
     Sequence,
+    Set,
+    String,
+    Typed,
 )
-
 from openpyxl.descriptors.excel import ExtensionList, Relation
 from openpyxl.descriptors.nested import NestedInteger
 from openpyxl.descriptors.sequence import NestedSequence
-from openpyxl.xml.constants import SHEET_MAIN_NS
-from openpyxl.xml.functions import tostring
+from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.packaging.relationship import (
-    RelationshipList,
     Relationship,
-    get_rels_path
+    RelationshipList,
+    get_rels_path,
 )
-from .fields import Index
-
 from openpyxl.worksheet.filters import (
     AutoFilter,
     CellRange,
@@ -42,6 +36,10 @@ from openpyxl.worksheet.filters import (
     SortState,
     Top10,
 )
+from openpyxl.xml.constants import SHEET_MAIN_NS
+from openpyxl.xml.functions import tostring
+
+from .fields import Index
 
 
 class HierarchyUsage(Serialisable):
@@ -50,9 +48,10 @@ class HierarchyUsage(Serialisable):
 
     hierarchyUsage = Integer()
 
-    def __init__(self,
-                 hierarchyUsage=None,
-                ):
+    def __init__(
+        self,
+        hierarchyUsage=None,
+    ):
         self.hierarchyUsage = hierarchyUsage
 
 
@@ -60,17 +59,19 @@ class ColHierarchiesUsage(Serialisable):
 
     tagname = "colHierarchiesUsage"
 
-    colHierarchyUsage = Sequence(expected_type=HierarchyUsage, )
+    colHierarchyUsage = Sequence(
+        expected_type=HierarchyUsage,
+    )
 
-    __elements__ = ('colHierarchyUsage',)
-    __attrs__ = ('count', )
+    __elements__ = ("colHierarchyUsage",)
+    __attrs__ = ("count",)
 
-    def __init__(self,
-                 count=None,
-                 colHierarchyUsage=(),
-                ):
+    def __init__(
+        self,
+        count=None,
+        colHierarchyUsage=(),
+    ):
         self.colHierarchyUsage = colHierarchyUsage
-
 
     @property
     def count(self):
@@ -81,15 +82,18 @@ class RowHierarchiesUsage(Serialisable):
 
     tagname = "rowHierarchiesUsage"
 
-    rowHierarchyUsage = Sequence(expected_type=HierarchyUsage, )
+    rowHierarchyUsage = Sequence(
+        expected_type=HierarchyUsage,
+    )
 
-    __elements__ = ('rowHierarchyUsage',)
-    __attrs__ = ('count', )
+    __elements__ = ("rowHierarchyUsage",)
+    __attrs__ = ("count",)
 
-    def __init__(self,
-                 count=None,
-                 rowHierarchyUsage=(),
-                ):
+    def __init__(
+        self,
+        count=None,
+        rowHierarchyUsage=(),
+    ):
         self.rowHierarchyUsage = rowHierarchyUsage
 
     @property
@@ -103,21 +107,78 @@ class PivotFilter(Serialisable):
 
     fld = Integer()
     mpFld = Integer(allow_none=True)
-    type = Set(values=(['unknown', 'count', 'percent', 'sum', 'captionEqual',
-                        'captionNotEqual', 'captionBeginsWith', 'captionNotBeginsWith',
-                        'captionEndsWith', 'captionNotEndsWith', 'captionContains',
-                        'captionNotContains', 'captionGreaterThan', 'captionGreaterThanOrEqual',
-                        'captionLessThan', 'captionLessThanOrEqual', 'captionBetween',
-                        'captionNotBetween', 'valueEqual', 'valueNotEqual', 'valueGreaterThan',
-                        'valueGreaterThanOrEqual', 'valueLessThan', 'valueLessThanOrEqual',
-                        'valueBetween', 'valueNotBetween', 'dateEqual', 'dateNotEqual',
-                        'dateOlderThan', 'dateOlderThanOrEqual', 'dateNewerThan',
-                        'dateNewerThanOrEqual', 'dateBetween', 'dateNotBetween', 'tomorrow',
-                        'today', 'yesterday', 'nextWeek', 'thisWeek', 'lastWeek', 'nextMonth',
-                        'thisMonth', 'lastMonth', 'nextQuarter', 'thisQuarter', 'lastQuarter',
-                        'nextYear', 'thisYear', 'lastYear', 'yearToDate', 'Q1', 'Q2', 'Q3', 'Q4',
-                        'M1', 'M2', 'M3', 'M4', 'M5', 'M6', 'M7', 'M8', 'M9', 'M10', 'M11',
-                        'M12']))
+    type = Set(
+        values=(
+            [
+                "unknown",
+                "count",
+                "percent",
+                "sum",
+                "captionEqual",
+                "captionNotEqual",
+                "captionBeginsWith",
+                "captionNotBeginsWith",
+                "captionEndsWith",
+                "captionNotEndsWith",
+                "captionContains",
+                "captionNotContains",
+                "captionGreaterThan",
+                "captionGreaterThanOrEqual",
+                "captionLessThan",
+                "captionLessThanOrEqual",
+                "captionBetween",
+                "captionNotBetween",
+                "valueEqual",
+                "valueNotEqual",
+                "valueGreaterThan",
+                "valueGreaterThanOrEqual",
+                "valueLessThan",
+                "valueLessThanOrEqual",
+                "valueBetween",
+                "valueNotBetween",
+                "dateEqual",
+                "dateNotEqual",
+                "dateOlderThan",
+                "dateOlderThanOrEqual",
+                "dateNewerThan",
+                "dateNewerThanOrEqual",
+                "dateBetween",
+                "dateNotBetween",
+                "tomorrow",
+                "today",
+                "yesterday",
+                "nextWeek",
+                "thisWeek",
+                "lastWeek",
+                "nextMonth",
+                "thisMonth",
+                "lastMonth",
+                "nextQuarter",
+                "thisQuarter",
+                "lastQuarter",
+                "nextYear",
+                "thisYear",
+                "lastYear",
+                "yearToDate",
+                "Q1",
+                "Q2",
+                "Q3",
+                "Q4",
+                "M1",
+                "M2",
+                "M3",
+                "M4",
+                "M5",
+                "M6",
+                "M7",
+                "M8",
+                "M9",
+                "M10",
+                "M11",
+                "M12",
+            ]
+        )
+    )
     evalOrder = Integer(allow_none=True)
     id = Integer()
     iMeasureHier = Integer(allow_none=True)
@@ -126,26 +187,29 @@ class PivotFilter(Serialisable):
     description = String(allow_none=True)
     stringValue1 = String(allow_none=True)
     stringValue2 = String(allow_none=True)
-    autoFilter = Typed(expected_type=AutoFilter, )
+    autoFilter = Typed(
+        expected_type=AutoFilter,
+    )
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = ('autoFilter',)
+    __elements__ = ("autoFilter",)
 
-    def __init__(self,
-                 fld=None,
-                 mpFld=None,
-                 type=None,
-                 evalOrder=None,
-                 id=None,
-                 iMeasureHier=None,
-                 iMeasureFld=None,
-                 name=None,
-                 description=None,
-                 stringValue1=None,
-                 stringValue2=None,
-                 autoFilter=None,
-                 extLst=None,
-                ):
+    def __init__(
+        self,
+        fld=None,
+        mpFld=None,
+        type=None,
+        evalOrder=None,
+        id=None,
+        iMeasureHier=None,
+        iMeasureFld=None,
+        name=None,
+        description=None,
+        stringValue1=None,
+        stringValue2=None,
+        autoFilter=None,
+        extLst=None,
+    ):
         self.fld = fld
         self.mpFld = mpFld
         self.type = type
@@ -165,12 +229,13 @@ class PivotFilters(Serialisable):
     count = Integer()
     filter = Typed(expected_type=PivotFilter, allow_none=True)
 
-    __elements__ = ('filter',)
+    __elements__ = ("filter",)
 
-    def __init__(self,
-                 count=None,
-                 filter=None,
-                ):
+    def __init__(
+        self,
+        count=None,
+        filter=None,
+    ):
         self.filter = filter
 
 
@@ -185,14 +250,15 @@ class PivotTableStyle(Serialisable):
     showColStripes = Bool()
     showLastColumn = Bool()
 
-    def __init__(self,
-                 name=None,
-                 showRowHeaders=None,
-                 showColHeaders=None,
-                 showRowStripes=None,
-                 showColStripes=None,
-                 showLastColumn=None,
-                ):
+    def __init__(
+        self,
+        name=None,
+        showRowHeaders=None,
+        showColHeaders=None,
+        showRowStripes=None,
+        showColStripes=None,
+        showLastColumn=None,
+    ):
         self.name = name
         self.showRowHeaders = showRowHeaders
         self.showColHeaders = showColHeaders
@@ -208,13 +274,14 @@ class MemberList(Serialisable):
     level = Integer(allow_none=True)
     member = NestedSequence(expected_type=String, attribute="name")
 
-    __elements__ = ('member',)
+    __elements__ = ("member",)
 
-    def __init__(self,
-                 count=None,
-                 level=None,
-                 member=(),
-                ):
+    def __init__(
+        self,
+        count=None,
+        level=None,
+        member=(),
+    ):
         self.level = level
         self.member = member
 
@@ -237,17 +304,18 @@ class MemberProperty(Serialisable):
     level = Integer(allow_none=True)
     field = Integer()
 
-    def __init__(self,
-                 name=None,
-                 showCell=None,
-                 showTip=None,
-                 showAsCaption=None,
-                 nameLen=None,
-                 pPos=None,
-                 pLen=None,
-                 level=None,
-                 field=None,
-                ):
+    def __init__(
+        self,
+        name=None,
+        showCell=None,
+        showTip=None,
+        showAsCaption=None,
+        nameLen=None,
+        pPos=None,
+        pLen=None,
+        level=None,
+        field=None,
+    ):
         self.name = name
         self.showCell = showCell
         self.showTip = showTip
@@ -278,24 +346,28 @@ class PivotHierarchy(Serialisable):
     members = Typed(expected_type=MemberList, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = ('mps', 'members',)
+    __elements__ = (
+        "mps",
+        "members",
+    )
 
-    def __init__(self,
-                 outline=None,
-                 multipleItemSelectionAllowed=None,
-                 subtotalTop=None,
-                 showInFieldList=None,
-                 dragToRow=None,
-                 dragToCol=None,
-                 dragToPage=None,
-                 dragToData=None,
-                 dragOff=None,
-                 includeNewItemsInFilter=None,
-                 caption=None,
-                 mps=(),
-                 members=None,
-                 extLst=None,
-                ):
+    def __init__(
+        self,
+        outline=None,
+        multipleItemSelectionAllowed=None,
+        subtotalTop=None,
+        showInFieldList=None,
+        dragToRow=None,
+        dragToCol=None,
+        dragToPage=None,
+        dragToData=None,
+        dragOff=None,
+        includeNewItemsInFilter=None,
+        caption=None,
+        mps=(),
+        members=None,
+        extLst=None,
+    ):
         self.outline = outline
         self.multipleItemSelectionAllowed = multipleItemSelectionAllowed
         self.subtotalTop = subtotalTop
@@ -335,29 +407,30 @@ class Reference(Serialisable):
     x = NestedInteger(allow_none=True, attribute="v")
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = ('x',)
+    __elements__ = ("x",)
 
-    def __init__(self,
-                 field=None,
-                 count=None,
-                 selected=None,
-                 byPosition=None,
-                 relative=None,
-                 defaultSubtotal=None,
-                 sumSubtotal=None,
-                 countASubtotal=None,
-                 avgSubtotal=None,
-                 maxSubtotal=None,
-                 minSubtotal=None,
-                 productSubtotal=None,
-                 countSubtotal=None,
-                 stdDevSubtotal=None,
-                 stdDevPSubtotal=None,
-                 varSubtotal=None,
-                 varPSubtotal=None,
-                 x=None,
-                 extLst=None,
-                ):
+    def __init__(
+        self,
+        field=None,
+        count=None,
+        selected=None,
+        byPosition=None,
+        relative=None,
+        defaultSubtotal=None,
+        sumSubtotal=None,
+        countASubtotal=None,
+        avgSubtotal=None,
+        maxSubtotal=None,
+        minSubtotal=None,
+        productSubtotal=None,
+        countSubtotal=None,
+        stdDevSubtotal=None,
+        stdDevPSubtotal=None,
+        varSubtotal=None,
+        varPSubtotal=None,
+        x=None,
+        extLst=None,
+    ):
         self.field = field
         self.selected = selected
         self.byPosition = byPosition
@@ -376,7 +449,6 @@ class Reference(Serialisable):
         self.varPSubtotal = varPSubtotal
         self.x = x
 
-
     @property
     def count(self):
         return len(self.field)
@@ -389,8 +461,9 @@ class PivotArea(Serialisable):
     references = NestedSequence(expected_type=Reference, count=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
     field = Integer(allow_none=True)
-    type = NoneSet(values=(['normal', 'data', 'all', 'origin', 'button',
-                            'topEnd', 'topRight']))
+    type = NoneSet(
+        values=(["normal", "data", "all", "origin", "button", "topEnd", "topRight"])
+    )
     dataOnly = Bool(allow_none=True)
     labelOnly = Bool(allow_none=True)
     grandRow = Bool(allow_none=True)
@@ -399,27 +472,28 @@ class PivotArea(Serialisable):
     outline = Bool(allow_none=True)
     offset = String(allow_none=True)
     collapsedLevelsAreSubtotals = Bool(allow_none=True)
-    axis = NoneSet(values=(['axisRow', 'axisCol', 'axisPage', 'axisValues']))
+    axis = NoneSet(values=(["axisRow", "axisCol", "axisPage", "axisValues"]))
     fieldPosition = Integer(allow_none=True)
 
-    __elements__ = ('references',)
+    __elements__ = ("references",)
 
-    def __init__(self,
-                 references=(),
-                 extLst=None,
-                 field=None,
-                 type="normal",
-                 dataOnly=True,
-                 labelOnly=None,
-                 grandRow=None,
-                 grandCol=None,
-                 cacheIndex=None,
-                 outline=True,
-                 offset=None,
-                 collapsedLevelsAreSubtotals=None,
-                 axis=None,
-                 fieldPosition=None,
-                ):
+    def __init__(
+        self,
+        references=(),
+        extLst=None,
+        field=None,
+        type="normal",
+        dataOnly=True,
+        labelOnly=None,
+        grandRow=None,
+        grandCol=None,
+        cacheIndex=None,
+        outline=True,
+        offset=None,
+        collapsedLevelsAreSubtotals=None,
+        axis=None,
+        fieldPosition=None,
+    ):
         self.references = references
         self.extLst = extLst
         self.field = field
@@ -443,16 +517,19 @@ class ChartFormat(Serialisable):
     chart = Integer()
     format = Integer()
     series = Bool()
-    pivotArea = Typed(expected_type=PivotArea, )
+    pivotArea = Typed(
+        expected_type=PivotArea,
+    )
 
-    __elements__ = ('pivotArea',)
+    __elements__ = ("pivotArea",)
 
-    def __init__(self,
-                 chart=None,
-                 format=None,
-                 series=None,
-                 pivotArea=None,
-                ):
+    def __init__(
+        self,
+        chart=None,
+        format=None,
+        series=None,
+        pivotArea=None,
+    ):
         self.chart = chart
         self.format = format
         self.series = series
@@ -463,21 +540,22 @@ class ConditionalFormat(Serialisable):
 
     tagname = "conditionalFormat"
 
-    scope = Set(values=(['selection', 'data', 'field']))
-    type = NoneSet(values=(['all', 'row', 'column']))
+    scope = Set(values=(["selection", "data", "field"]))
+    type = NoneSet(values=(["all", "row", "column"]))
     priority = Integer()
     pivotAreas = NestedSequence(expected_type=PivotArea)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = ('pivotAreas',)
+    __elements__ = ("pivotAreas",)
 
-    def __init__(self,
-                 scope=None,
-                 type=None,
-                 priority=None,
-                 pivotAreas=(),
-                 extLst=None,
-                ):
+    def __init__(
+        self,
+        scope=None,
+        type=None,
+        priority=None,
+        pivotAreas=(),
+        extLst=None,
+    ):
         self.scope = scope
         self.type = type
         self.priority = priority
@@ -489,19 +567,22 @@ class Format(Serialisable):
 
     tagname = "format"
 
-    action = NoneSet(values=(['blank', 'formatting', 'drill', 'formula']))
+    action = NoneSet(values=(["blank", "formatting", "drill", "formula"]))
     dxfId = Integer(allow_none=True)
-    pivotArea = Typed(expected_type=PivotArea, )
+    pivotArea = Typed(
+        expected_type=PivotArea,
+    )
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
 
-    __elements__ = ('pivotArea',)
+    __elements__ = ("pivotArea",)
 
-    def __init__(self,
-                 action="formatting",
-                 dxfId=None,
-                 pivotArea=None,
-                 extLst=None,
-                ):
+    def __init__(
+        self,
+        action="formatting",
+        dxfId=None,
+        pivotArea=None,
+        extLst=None,
+    ):
         self.action = action
         self.dxfId = dxfId
         self.pivotArea = pivotArea
@@ -514,11 +595,38 @@ class DataField(Serialisable):
 
     name = String(allow_none=True)
     fld = Integer()
-    subtotal = Set(values=(['average', 'count', 'countNums', 'max', 'min',
-                            'product', 'stdDev', 'stdDevp', 'sum', 'var', 'varp']))
-    showDataAs = Set(values=(['normal', 'difference', 'percent',
-                              'percentDiff', 'runTotal', 'percentOfRow', 'percentOfCol',
-                              'percentOfTotal', 'index']))
+    subtotal = Set(
+        values=(
+            [
+                "average",
+                "count",
+                "countNums",
+                "max",
+                "min",
+                "product",
+                "stdDev",
+                "stdDevp",
+                "sum",
+                "var",
+                "varp",
+            ]
+        )
+    )
+    showDataAs = Set(
+        values=(
+            [
+                "normal",
+                "difference",
+                "percent",
+                "percentDiff",
+                "runTotal",
+                "percentOfRow",
+                "percentOfCol",
+                "percentOfTotal",
+                "index",
+            ]
+        )
+    )
     baseField = Integer()
     baseItem = Integer()
     numFmtId = Integer(allow_none=True)
@@ -526,17 +634,17 @@ class DataField(Serialisable):
 
     __elements__ = ()
 
-
-    def __init__(self,
-                 name=None,
-                 fld=None,
-                 subtotal="sum",
-                 showDataAs="normal",
-                 baseField=-1,
-                 baseItem=1048832,
-                 numFmtId=None,
-                 extLst=None,
-                ):
+    def __init__(
+        self,
+        name=None,
+        fld=None,
+        subtotal="sum",
+        showDataAs="normal",
+        baseField=-1,
+        baseItem=1048832,
+        numFmtId=None,
+        extLst=None,
+    ):
         self.name = name
         self.fld = fld
         self.subtotal = subtotal
@@ -560,14 +668,15 @@ class PageField(Serialisable):
 
     __elements__ = ()
 
-    def __init__(self,
-                 fld=None,
-                 item=None,
-                 hier=None,
-                 name=None,
-                 cap=None,
-                 extLst=None,
-                ):
+    def __init__(
+        self,
+        fld=None,
+        item=None,
+        hier=None,
+        name=None,
+        cap=None,
+        extLst=None,
+    ):
         self.fld = fld
         self.item = item
         self.hier = hier
@@ -580,21 +689,40 @@ class RowColItem(Serialisable):
 
     tagname = "i"
 
-    t = Set(values=(['data', 'default', 'sum', 'countA', 'avg', 'max', 'min',
-                     'product', 'count', 'stdDev', 'stdDevP', 'var', 'varP', 'grand',
-                     'blank']))
+    t = Set(
+        values=(
+            [
+                "data",
+                "default",
+                "sum",
+                "countA",
+                "avg",
+                "max",
+                "min",
+                "product",
+                "count",
+                "stdDev",
+                "stdDevP",
+                "var",
+                "varP",
+                "grand",
+                "blank",
+            ]
+        )
+    )
     r = Integer()
     i = Integer()
     x = Sequence(expected_type=Index, attribute="v")
 
-    __elements__ = ('x',)
+    __elements__ = ("x",)
 
-    def __init__(self,
-                 t="data",
-                 r=0,
-                 i=0,
-                 x=(),
-                ):
+    def __init__(
+        self,
+        t="data",
+        r=0,
+        i=0,
+        x=(),
+    ):
         self.t = t
         self.r = r
         self.i = i
@@ -607,21 +735,25 @@ class RowColField(Serialisable):
 
     x = Integer()
 
-    def __init__(self,
-                 x=None,
-                ):
+    def __init__(
+        self,
+        x=None,
+    ):
         self.x = x
 
 
 class AutoSortScope(Serialisable):
 
-    pivotArea = Typed(expected_type=PivotArea, )
+    pivotArea = Typed(
+        expected_type=PivotArea,
+    )
 
-    __elements__ = ('pivotArea',)
+    __elements__ = ("pivotArea",)
 
-    def __init__(self,
-                 pivotArea=None,
-                ):
+    def __init__(
+        self,
+        pivotArea=None,
+    ):
         self.pivotArea = pivotArea
 
 
@@ -630,9 +762,27 @@ class FieldItem(Serialisable):
     tagname = "item"
 
     n = String(allow_none=True)
-    t = Set(values=(['data', 'default', 'sum', 'countA', 'avg', 'max', 'min',
-                     'product', 'count', 'stdDev', 'stdDevP', 'var', 'varP', 'grand',
-                     'blank']))
+    t = Set(
+        values=(
+            [
+                "data",
+                "default",
+                "sum",
+                "countA",
+                "avg",
+                "max",
+                "min",
+                "product",
+                "count",
+                "stdDev",
+                "stdDevP",
+                "var",
+                "varP",
+                "grand",
+                "blank",
+            ]
+        )
+    )
     h = Bool(allow_none=True)
     s = Bool(allow_none=True)
     sd = Bool(allow_none=True)
@@ -643,19 +793,20 @@ class FieldItem(Serialisable):
     d = Bool(allow_none=True)
     e = Bool(allow_none=True)
 
-    def __init__(self,
-                 n=None,
-                 t="data",
-                 h=None,
-                 s=None,
-                 sd=True,
-                 f=None,
-                 m=None,
-                 c=None,
-                 x=None,
-                 d=None,
-                 e=None,
-                ):
+    def __init__(
+        self,
+        n=None,
+        t="data",
+        h=None,
+        s=None,
+        sd=True,
+        f=None,
+        m=None,
+        c=None,
+        x=None,
+        d=None,
+        e=None,
+    ):
         self.n = n
         self.t = t
         self.h = h
@@ -677,7 +828,7 @@ class PivotField(Serialisable):
     autoSortScope = Typed(expected_type=AutoSortScope, allow_none=True)
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
     name = String(allow_none=True)
-    axis = NoneSet(values=(['axisRow', 'axisCol', 'axisPage', 'axisValues']))
+    axis = NoneSet(values=(["axisRow", "axisCol", "axisPage", "axisValues"]))
     dataField = Bool(allow_none=True)
     subtotalCaption = String(allow_none=True)
     showDropDowns = Bool(allow_none=True)
@@ -704,7 +855,7 @@ class PivotField(Serialisable):
     measureFilter = Bool(allow_none=True)
     includeNewItemsInFilter = Bool(allow_none=True)
     itemPageCount = Integer(allow_none=True)
-    sortType = Set(values=(['manual', 'ascending', 'descending']))
+    sortType = Set(values=(["manual", "ascending", "descending"]))
     dataSourceSort = Bool(allow_none=True)
     nonAutoSortDefault = Bool(allow_none=True)
     rankBy = Integer(allow_none=True)
@@ -725,61 +876,65 @@ class PivotField(Serialisable):
     showPropAsCaption = Bool(allow_none=True)
     defaultAttributeDrillState = Bool(allow_none=True)
 
-    __elements__ = ('items', 'autoSortScope',)
+    __elements__ = (
+        "items",
+        "autoSortScope",
+    )
 
-    def __init__(self,
-                 items=(),
-                 autoSortScope=None,
-                 name=None,
-                 axis=None,
-                 dataField=None,
-                 subtotalCaption=None,
-                 showDropDowns=True,
-                 hiddenLevel=None,
-                 uniqueMemberProperty=None,
-                 compact=True,
-                 allDrilled=None,
-                 numFmtId=None,
-                 outline=True,
-                 subtotalTop=True,
-                 dragToRow=True,
-                 dragToCol=True,
-                 multipleItemSelectionAllowed=None,
-                 dragToPage=True,
-                 dragToData=True,
-                 dragOff=True,
-                 showAll=True,
-                 insertBlankRow=None,
-                 serverField=None,
-                 insertPageBreak=None,
-                 autoShow=None,
-                 topAutoShow=True,
-                 hideNewItems=None,
-                 measureFilter=None,
-                 includeNewItemsInFilter=None,
-                 itemPageCount=10,
-                 sortType="manual",
-                 dataSourceSort=None,
-                 nonAutoSortDefault=None,
-                 rankBy=None,
-                 defaultSubtotal=True,
-                 sumSubtotal=None,
-                 countASubtotal=None,
-                 avgSubtotal=None,
-                 maxSubtotal=None,
-                 minSubtotal=None,
-                 productSubtotal=None,
-                 countSubtotal=None,
-                 stdDevSubtotal=None,
-                 stdDevPSubtotal=None,
-                 varSubtotal=None,
-                 varPSubtotal=None,
-                 showPropCell=None,
-                 showPropTip=None,
-                 showPropAsCaption=None,
-                 defaultAttributeDrillState=None,
-                 extLst=None,
-                ):
+    def __init__(
+        self,
+        items=(),
+        autoSortScope=None,
+        name=None,
+        axis=None,
+        dataField=None,
+        subtotalCaption=None,
+        showDropDowns=True,
+        hiddenLevel=None,
+        uniqueMemberProperty=None,
+        compact=True,
+        allDrilled=None,
+        numFmtId=None,
+        outline=True,
+        subtotalTop=True,
+        dragToRow=True,
+        dragToCol=True,
+        multipleItemSelectionAllowed=None,
+        dragToPage=True,
+        dragToData=True,
+        dragOff=True,
+        showAll=True,
+        insertBlankRow=None,
+        serverField=None,
+        insertPageBreak=None,
+        autoShow=None,
+        topAutoShow=True,
+        hideNewItems=None,
+        measureFilter=None,
+        includeNewItemsInFilter=None,
+        itemPageCount=10,
+        sortType="manual",
+        dataSourceSort=None,
+        nonAutoSortDefault=None,
+        rankBy=None,
+        defaultSubtotal=True,
+        sumSubtotal=None,
+        countASubtotal=None,
+        avgSubtotal=None,
+        maxSubtotal=None,
+        minSubtotal=None,
+        productSubtotal=None,
+        countSubtotal=None,
+        stdDevSubtotal=None,
+        stdDevPSubtotal=None,
+        varSubtotal=None,
+        varPSubtotal=None,
+        showPropCell=None,
+        showPropTip=None,
+        showPropAsCaption=None,
+        defaultAttributeDrillState=None,
+        extLst=None,
+    ):
         self.items = items
         self.autoSortScope = autoSortScope
         self.name = name
@@ -843,14 +998,15 @@ class Location(Serialisable):
     rowPageCount = Integer(allow_none=True)
     colPageCount = Integer(allow_none=True)
 
-    def __init__(self,
-                 ref=None,
-                 firstHeaderRow=None,
-                 firstDataRow=None,
-                 firstDataCol=None,
-                 rowPageCount=None,
-                 colPageCount=None,
-                ):
+    def __init__(
+        self,
+        ref=None,
+        firstHeaderRow=None,
+        firstDataRow=None,
+        firstDataCol=None,
+        rowPageCount=None,
+        colPageCount=None,
+    ):
         self.ref = ref
         self.firstHeaderRow = firstHeaderRow
         self.firstDataRow = firstDataRow
@@ -861,8 +1017,12 @@ class Location(Serialisable):
 
 class TableDefinition(Serialisable):
 
-    mime_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.pivotTable+xml"
-    rel_type = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/pivotTable"
+    mime_type = (
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.pivotTable+xml"
+    )
+    rel_type = (
+        "http://schemas.openxmlformats.org/officeDocument/2006/relationships/pivotTable"
+    )
     _id = 1
     _path = "/xl/pivotTables/pivotTable{0}.xml"
 
@@ -937,7 +1097,9 @@ class TableDefinition(Serialisable):
     applyPatternFormats = Bool()
     applyAlignmentFormats = Bool()
     applyWidthHeightFormats = Bool()
-    location = Typed(expected_type=Location, )
+    location = Typed(
+        expected_type=Location,
+    )
     pivotFields = NestedSequence(expected_type=PivotField, count=True)
     rowFields = NestedSequence(expected_type=RowColField, count=True)
     rowItems = NestedSequence(expected_type=RowColItem, count=True)
@@ -956,100 +1118,114 @@ class TableDefinition(Serialisable):
     extLst = Typed(expected_type=ExtensionList, allow_none=True)
     id = Relation()
 
-    __elements__ = ('location', 'pivotFields', 'rowFields', 'rowItems',
-                    'colFields', 'colItems', 'pageFields', 'dataFields', 'formats',
-                    'conditionalFormats', 'chartFormats', 'pivotHierarchies',
-                    'pivotTableStyleInfo', 'filters', 'rowHierarchiesUsage',
-                    'colHierarchiesUsage',)
+    __elements__ = (
+        "location",
+        "pivotFields",
+        "rowFields",
+        "rowItems",
+        "colFields",
+        "colItems",
+        "pageFields",
+        "dataFields",
+        "formats",
+        "conditionalFormats",
+        "chartFormats",
+        "pivotHierarchies",
+        "pivotTableStyleInfo",
+        "filters",
+        "rowHierarchiesUsage",
+        "colHierarchiesUsage",
+    )
 
-    def __init__(self,
-                 name=None,
-                 cacheId=None,
-                 dataOnRows=False,
-                 dataPosition=None,
-                 dataCaption=None,
-                 grandTotalCaption=None,
-                 errorCaption=None,
-                 showError=False,
-                 missingCaption=None,
-                 showMissing=True,
-                 pageStyle=None,
-                 pivotTableStyle=None,
-                 vacatedStyle=None,
-                 tag=None,
-                 updatedVersion=0,
-                 minRefreshableVersion=0,
-                 asteriskTotals=False,
-                 showItems=True,
-                 editData=False,
-                 disableFieldList=False,
-                 showCalcMbrs=True,
-                 visualTotals=True,
-                 showMultipleLabel=True,
-                 showDataDropDown=True,
-                 showDrill=True,
-                 printDrill=False,
-                 showMemberPropertyTips=True,
-                 showDataTips=True,
-                 enableWizard=True,
-                 enableDrill=True,
-                 enableFieldProperties=True,
-                 preserveFormatting=True,
-                 useAutoFormatting=False,
-                 pageWrap=0,
-                 pageOverThenDown=False,
-                 subtotalHiddenItems=False,
-                 rowGrandTotals=True,
-                 colGrandTotals=True,
-                 fieldPrintTitles=False,
-                 itemPrintTitles=False,
-                 mergeItem=False,
-                 showDropZones=True,
-                 createdVersion=0,
-                 indent=1,
-                 showEmptyRow=False,
-                 showEmptyCol=False,
-                 showHeaders=True,
-                 compact=True,
-                 outline=False,
-                 outlineData=False,
-                 compactData=True,
-                 published=False,
-                 gridDropZones=False,
-                 immersive=True,
-                 multipleFieldFilters=None,
-                 chartFormat=0,
-                 rowHeaderCaption=None,
-                 colHeaderCaption=None,
-                 fieldListSortAscending=None,
-                 mdxSubqueries=None,
-                 customListSort=None,
-                 autoFormatId=None,
-                 applyNumberFormats=False,
-                 applyBorderFormats=False,
-                 applyFontFormats=False,
-                 applyPatternFormats=False,
-                 applyAlignmentFormats=False,
-                 applyWidthHeightFormats=False,
-                 location=None,
-                 pivotFields=(),
-                 rowFields=(),
-                 rowItems=(),
-                 colFields=(),
-                 colItems=(),
-                 pageFields=(),
-                 dataFields=(),
-                 formats=(),
-                 conditionalFormats=(),
-                 chartFormats=(),
-                 pivotHierarchies=(),
-                 pivotTableStyleInfo=None,
-                 filters=(),
-                 rowHierarchiesUsage=None,
-                 colHierarchiesUsage=None,
-                 extLst=None,
-                 id=None,
-                ):
+    def __init__(
+        self,
+        name=None,
+        cacheId=None,
+        dataOnRows=False,
+        dataPosition=None,
+        dataCaption=None,
+        grandTotalCaption=None,
+        errorCaption=None,
+        showError=False,
+        missingCaption=None,
+        showMissing=True,
+        pageStyle=None,
+        pivotTableStyle=None,
+        vacatedStyle=None,
+        tag=None,
+        updatedVersion=0,
+        minRefreshableVersion=0,
+        asteriskTotals=False,
+        showItems=True,
+        editData=False,
+        disableFieldList=False,
+        showCalcMbrs=True,
+        visualTotals=True,
+        showMultipleLabel=True,
+        showDataDropDown=True,
+        showDrill=True,
+        printDrill=False,
+        showMemberPropertyTips=True,
+        showDataTips=True,
+        enableWizard=True,
+        enableDrill=True,
+        enableFieldProperties=True,
+        preserveFormatting=True,
+        useAutoFormatting=False,
+        pageWrap=0,
+        pageOverThenDown=False,
+        subtotalHiddenItems=False,
+        rowGrandTotals=True,
+        colGrandTotals=True,
+        fieldPrintTitles=False,
+        itemPrintTitles=False,
+        mergeItem=False,
+        showDropZones=True,
+        createdVersion=0,
+        indent=1,
+        showEmptyRow=False,
+        showEmptyCol=False,
+        showHeaders=True,
+        compact=True,
+        outline=False,
+        outlineData=False,
+        compactData=True,
+        published=False,
+        gridDropZones=False,
+        immersive=True,
+        multipleFieldFilters=None,
+        chartFormat=0,
+        rowHeaderCaption=None,
+        colHeaderCaption=None,
+        fieldListSortAscending=None,
+        mdxSubqueries=None,
+        customListSort=None,
+        autoFormatId=None,
+        applyNumberFormats=False,
+        applyBorderFormats=False,
+        applyFontFormats=False,
+        applyPatternFormats=False,
+        applyAlignmentFormats=False,
+        applyWidthHeightFormats=False,
+        location=None,
+        pivotFields=(),
+        rowFields=(),
+        rowItems=(),
+        colFields=(),
+        colItems=(),
+        pageFields=(),
+        dataFields=(),
+        formats=(),
+        conditionalFormats=(),
+        chartFormats=(),
+        pivotHierarchies=(),
+        pivotTableStyleInfo=None,
+        filters=(),
+        rowHierarchiesUsage=None,
+        colHierarchiesUsage=None,
+        extLst=None,
+        id=None,
+    ):
         self.name = name
         self.cacheId = cacheId
         self.dataOnRows = dataOnRows
@@ -1137,17 +1313,14 @@ class TableDefinition(Serialisable):
         self.extLst = extLst
         self.id = id
 
-
     def to_tree(self):
         tree = super(TableDefinition, self).to_tree()
         tree.set("xmlns", SHEET_MAIN_NS)
         return tree
 
-
     @property
     def path(self):
         return self._path.format(self._id)
-
 
     def _write(self, archive, manifest):
         """
@@ -1157,7 +1330,6 @@ class TableDefinition(Serialisable):
         xml = tostring(self.to_tree())
         archive.writestr(self.path[1:], xml)
         manifest.append(self)
-
 
     def _write_rels(self, archive, manifest):
         """
