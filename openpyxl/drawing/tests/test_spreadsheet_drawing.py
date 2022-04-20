@@ -1,23 +1,22 @@
 # Copyright (c) 2010-2021 openpyxl
 
+import PIL
 import pytest
 
-import PIL
-
-from openpyxl.xml.functions import fromstring, tostring
-from openpyxl.tests.helper import compare_xml
-from openpyxl.drawing.image import Image
 from openpyxl.chart import BarChart
+from openpyxl.drawing.image import Image
+from openpyxl.tests.helper import compare_xml
+from openpyxl.xml.functions import fromstring, tostring
 
 
 @pytest.fixture
 def TwoCellAnchor():
     from ..spreadsheet_drawing import TwoCellAnchor
+
     return TwoCellAnchor
 
 
 class TestTwoCellAnchor:
-
     def test_ctor(self, TwoCellAnchor):
         chart_drawing = TwoCellAnchor()
         xml = tostring(chart_drawing.to_tree())
@@ -40,7 +39,6 @@ class TestTwoCellAnchor:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, TwoCellAnchor):
         src = """
@@ -68,11 +66,11 @@ class TestTwoCellAnchor:
 @pytest.fixture
 def OneCellAnchor():
     from ..spreadsheet_drawing import OneCellAnchor
+
     return OneCellAnchor
 
 
 class TestOneCellAnchor:
-
     def test_ctor(self, OneCellAnchor):
         chart_drawing = OneCellAnchor()
         xml = tostring(chart_drawing.to_tree())
@@ -90,7 +88,6 @@ class TestOneCellAnchor:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, OneCellAnchor):
         src = """
@@ -113,11 +110,11 @@ class TestOneCellAnchor:
 @pytest.fixture
 def AbsoluteAnchor():
     from ..spreadsheet_drawing import AbsoluteAnchor
+
     return AbsoluteAnchor
 
 
 class TestAbsoluteAnchor:
-
     def test_ctor(self, AbsoluteAnchor):
         chart_drawing = AbsoluteAnchor()
         xml = tostring(chart_drawing.to_tree())
@@ -130,7 +127,6 @@ class TestAbsoluteAnchor:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, AbsoluteAnchor):
         src = """
@@ -148,22 +144,20 @@ class TestAbsoluteAnchor:
 @pytest.fixture
 def SpreadsheetDrawing():
     from ..spreadsheet_drawing import SpreadsheetDrawing
+
     return SpreadsheetDrawing
 
 
 class TestSpreadsheetDrawing:
-
     def test_ctor(self, SpreadsheetDrawing):
-        from ..spreadsheet_drawing import (
-            OneCellAnchor,
-            TwoCellAnchor,
-            AbsoluteAnchor
-        )
+        from ..spreadsheet_drawing import AbsoluteAnchor, OneCellAnchor, TwoCellAnchor
+
         a = [AbsoluteAnchor(), AbsoluteAnchor()]
         o = [OneCellAnchor()]
         t = [TwoCellAnchor(), TwoCellAnchor()]
-        chart_drawing = SpreadsheetDrawing(absoluteAnchor=a, oneCellAnchor=o,
-                                           twoCellAnchor=t)
+        chart_drawing = SpreadsheetDrawing(
+            absoluteAnchor=a, oneCellAnchor=o, twoCellAnchor=t
+        )
         xml = tostring(chart_drawing.to_tree())
         expected = """
         <wsDr>
@@ -222,7 +216,6 @@ class TestSpreadsheetDrawing:
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 
-
     def test_write_chart(self, SpreadsheetDrawing):
         from openpyxl.chart._chart import ChartBase
 
@@ -262,14 +255,12 @@ class TestSpreadsheetDrawing:
         </oneCellAnchor>
         </wsDr>
         """
-        diff = compare_xml (xml, expected)
+        diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_hash_function(self, SpreadsheetDrawing):
         drawing = SpreadsheetDrawing()
         assert hash(drawing) == hash(id(drawing))
-
 
     def test_write_picture(self, SpreadsheetDrawing):
         drawing = SpreadsheetDrawing()
@@ -296,7 +287,6 @@ class TestSpreadsheetDrawing:
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 
-
     def test_read_chart(self, SpreadsheetDrawing, datadir):
         datadir.chdir()
         with open("spreadsheet_drawing_with_chart.xml") as src:
@@ -308,12 +298,14 @@ class TestSpreadsheetDrawing:
         assert len(chart_rels) == 1
         assert chart_rels[0].anchor is not None
 
-
-    @pytest.mark.parametrize("path", [
-        "spreadsheet_drawing_with_blip.xml",
-        "two_cell_anchor_group.xml",
-        "two_cell_anchor_pic.xml",
-    ])
+    @pytest.mark.parametrize(
+        "path",
+        [
+            "spreadsheet_drawing_with_blip.xml",
+            "two_cell_anchor_group.xml",
+            "two_cell_anchor_pic.xml",
+        ],
+    )
     def test_read_blip(self, SpreadsheetDrawing, datadir, path):
         datadir.chdir()
         with open(path, "rb") as src:
@@ -325,7 +317,6 @@ class TestSpreadsheetDrawing:
         assert len(blip_rels) == 1
         assert blip_rels[0].anchor is not None
 
-
     def test_ignore_external_blip(self, SpreadsheetDrawing, datadir):
         with open("spreasheet_drawing_external_image.xml") as src:
             xml = src.read()
@@ -334,9 +325,9 @@ class TestSpreadsheetDrawing:
 
         assert drawing._blip_rels == []
 
-
     def test_write_rels(self, SpreadsheetDrawing):
         from openpyxl.packaging.relationship import Relationship
+
         rel = Relationship(type="drawing", Target="../file.xml")
         drawing = SpreadsheetDrawing()
         drawing._rels.append(rel)
@@ -350,23 +341,19 @@ class TestSpreadsheetDrawing:
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 
-
     def test_path(self, SpreadsheetDrawing):
         drawing = SpreadsheetDrawing()
         assert drawing.path == "/xl/drawings/drawingNone.xml"
-
 
     def test_empty(self, SpreadsheetDrawing):
         drawing = SpreadsheetDrawing()
         assert bool(drawing) is False
 
-
-    @pytest.mark.parametrize("attr", ['charts', 'images'])
+    @pytest.mark.parametrize("attr", ["charts", "images"])
     def test_bool(self, SpreadsheetDrawing, attr):
         drawing = SpreadsheetDrawing()
         getattr(drawing, attr).append(1)
         assert bool(drawing) is True
-
 
     def test_image_as_pic(self, SpreadsheetDrawing):
         src = """
@@ -417,7 +404,6 @@ class TestSpreadsheetDrawing:
         xml = tostring(drawing._write())
         diff = compare_xml(xml, src)
         assert diff is None, diff
-
 
     def test_image_as_group(self, SpreadsheetDrawing):
         src = """
@@ -491,6 +477,7 @@ class TestSpreadsheetDrawing:
 
 def test_check_anchor_chart():
     from ..spreadsheet_drawing import _check_anchor
+
     c = BarChart()
     anc = _check_anchor(c)
     assert anc._from.row == 14
@@ -502,6 +489,7 @@ def test_check_anchor_chart():
 @pytest.mark.parametrize("anchor", ("E17", "e17"))
 def test_check_chart_with_anchor(anchor):
     from ..spreadsheet_drawing import _check_anchor
+
     c = BarChart()
     c.anchor = anchor
     anc = _check_anchor(c)
@@ -514,8 +502,10 @@ def test_check_chart_with_anchor(anchor):
 @pytest.mark.pil_required
 def test_check_anchor_image(datadir):
     datadir.chdir()
-    from ..spreadsheet_drawing import _check_anchor
     from PIL.Image import Image as PILImage
+
+    from ..spreadsheet_drawing import _check_anchor
+
     im = Image(PILImage())
     anc = _check_anchor(im)
     assert anc._from.row == 0

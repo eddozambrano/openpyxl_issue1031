@@ -2,18 +2,18 @@
 
 import pytest
 
-from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
+from openpyxl.xml.functions import fromstring, tostring
 
 
 @pytest.fixture
 def GradientFillProperties():
     from ..fill import GradientFillProperties
+
     return GradientFillProperties
 
 
 class TestGradientFillProperties:
-
     def test_ctor(self, GradientFillProperties):
         fill = GradientFillProperties()
         xml = tostring(fill.to_tree())
@@ -22,7 +22,6 @@ class TestGradientFillProperties:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, GradientFillProperties):
         src = """
@@ -36,11 +35,11 @@ class TestGradientFillProperties:
 @pytest.fixture
 def Transform2D():
     from ..geometry import Transform2D
+
     return Transform2D
 
 
 class TestTransform2D:
-
     def test_ctor(self, Transform2D):
         shapes = Transform2D()
         xml = tostring(shapes.to_tree())
@@ -49,7 +48,6 @@ class TestTransform2D:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, Transform2D):
         src = """
@@ -63,11 +61,11 @@ class TestTransform2D:
 @pytest.fixture
 def Camera():
     from ..geometry import Camera
+
     return Camera
 
 
 class TestCamera:
-
     def test_ctor(self, Camera):
         cam = Camera(prst="legacyObliqueFront")
         xml = tostring(cam.to_tree())
@@ -76,7 +74,6 @@ class TestCamera:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, Camera):
         src = """
@@ -90,11 +87,11 @@ class TestCamera:
 @pytest.fixture
 def LightRig():
     from ..geometry import LightRig
+
     return LightRig
 
 
 class TestLightRig:
-
     def test_ctor(self, LightRig):
         rig = LightRig(rig="threePt", dir="t")
         xml = tostring(rig.to_tree())
@@ -103,7 +100,6 @@ class TestLightRig:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, LightRig):
         src = """
@@ -117,11 +113,11 @@ class TestLightRig:
 @pytest.fixture
 def Bevel():
     from ..geometry import Bevel
+
     return Bevel
 
 
 class TestBevel:
-
     def test_ctor(self, Bevel):
         bevel = Bevel(w=10, h=20)
         xml = tostring(bevel.to_tree())
@@ -131,24 +127,23 @@ class TestBevel:
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 
-
     def test_from_xml(self, Bevel):
         src = """
         <bevel w="101600" h="101600"/>
         """
         node = fromstring(src)
         bevel = Bevel.from_tree(node)
-        assert bevel == Bevel( w=101600, h=101600)
+        assert bevel == Bevel(w=101600, h=101600)
 
 
 @pytest.fixture
 def SphereCoords():
     from ..geometry import SphereCoords
+
     return SphereCoords
 
 
 class TestSphereCoords:
-
     def test_ctor(self, SphereCoords):
         rot = SphereCoords(lat=90, lon=45, rev=60)
         xml = tostring(rot.to_tree())
@@ -157,7 +152,6 @@ class TestSphereCoords:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, SphereCoords):
         src = """
@@ -171,11 +165,11 @@ class TestSphereCoords:
 @pytest.fixture
 def Vector3D():
     from ..geometry import Vector3D
+
     return Vector3D
 
 
 class TestVector3D:
-
     def test_ctor(self, Vector3D):
         vector = Vector3D(dx=100000, dy=300000, dz=50000)
         xml = tostring(vector.to_tree())
@@ -184,7 +178,6 @@ class TestVector3D:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, Vector3D):
         src = """
@@ -198,11 +191,11 @@ class TestVector3D:
 @pytest.fixture
 def Point3D():
     from ..geometry import Point3D
+
     return Point3D
 
 
 class TestPoint3D:
-
     def test_ctor(self, Point3D):
         pt = Point3D(x=40000, y=60000, z=100000)
         xml = tostring(pt.to_tree())
@@ -211,7 +204,6 @@ class TestPoint3D:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, Point3D):
         src = """

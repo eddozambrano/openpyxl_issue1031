@@ -1,17 +1,18 @@
 # Copyright (c) 2010-2021 openpyxl
 import pytest
 
-from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
+from openpyxl.xml.functions import fromstring, tostring
+
 
 @pytest.fixture
 def SurfaceChart():
     from ..surface_chart import SurfaceChart
+
     return SurfaceChart
 
 
 class TestSurfaceChart:
-
     def test_ctor(self, SurfaceChart):
         chart = SurfaceChart()
         xml = tostring(chart.to_tree())
@@ -24,7 +25,6 @@ class TestSurfaceChart:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, SurfaceChart):
         src = """
@@ -52,11 +52,11 @@ class TestSurfaceChart:
 @pytest.fixture
 def SurfaceChart3D():
     from ..surface_chart import SurfaceChart3D
+
     return SurfaceChart3D
 
 
 class TestSurfaceChart3D:
-
     def test_ctor(self, SurfaceChart3D):
         chart = SurfaceChart3D()
         xml = tostring(chart.to_tree())
@@ -69,7 +69,6 @@ class TestSurfaceChart3D:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, SurfaceChart3D):
         src = """
@@ -108,11 +107,11 @@ class TestSurfaceChart3D:
 @pytest.fixture
 def BandFormat():
     from ..surface_chart import BandFormat
+
     return BandFormat
 
 
 class TestBandFormat:
-
     def test_ctor(self, BandFormat):
         fmt = BandFormat()
         xml = tostring(fmt.to_tree())
@@ -123,7 +122,6 @@ class TestBandFormat:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, BandFormat):
         src = """
@@ -139,11 +137,11 @@ class TestBandFormat:
 @pytest.fixture
 def BandFormatList():
     from ..surface_chart import BandFormatList
+
     return BandFormatList
 
 
 class TestBandFormatList:
-
     def test_ctor(self, BandFormatList):
         fmt = BandFormatList()
         xml = tostring(fmt.to_tree())
@@ -152,7 +150,6 @@ class TestBandFormatList:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, BandFormatList):
         src = """

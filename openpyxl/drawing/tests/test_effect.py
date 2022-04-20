@@ -1,17 +1,18 @@
 # Copyright (c) 2010-2021 openpyxl
 import pytest
 
-from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
+from openpyxl.xml.functions import fromstring, tostring
+
 
 @pytest.fixture
 def OuterShadow():
     from ..effect import OuterShadow
+
     return OuterShadow
 
 
 class TestOuterShadow:
-
     def test_ctor(self, OuterShadow):
         shadow = OuterShadow(algn="tl", srgbClr="000000")
         xml = tostring(shadow.to_tree())
@@ -23,7 +24,6 @@ class TestOuterShadow:
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 
-
     def test_from_xml(self, OuterShadow):
         src = """
         <outerShdw blurRad="38100" dist="38100" dir="2700000" algn="tl">
@@ -33,17 +33,19 @@ class TestOuterShadow:
         """
         node = fromstring(src)
         shadow = OuterShadow.from_tree(node)
-        assert shadow == OuterShadow(algn="tl", blurRad=38100, dist=38100, dir=2700000, srgbClr="000000")
+        assert shadow == OuterShadow(
+            algn="tl", blurRad=38100, dist=38100, dir=2700000, srgbClr="000000"
+        )
 
 
 @pytest.fixture
 def TintEffect():
     from ..effect import TintEffect
+
     return TintEffect
 
 
 class TestTintEffect:
-
     def test_ctor(self, TintEffect):
         tint = TintEffect()
         xml = tostring(tint.to_tree())
@@ -52,7 +54,6 @@ class TestTintEffect:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, TintEffect):
         src = """
@@ -66,11 +67,11 @@ class TestTintEffect:
 @pytest.fixture
 def LuminanceEffect():
     from ..effect import LuminanceEffect
+
     return LuminanceEffect
 
 
 class TestLuminanceEffect:
-
     def test_ctor(self, LuminanceEffect):
         lum = LuminanceEffect()
         xml = tostring(lum.to_tree())
@@ -79,7 +80,6 @@ class TestLuminanceEffect:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, LuminanceEffect):
         src = """

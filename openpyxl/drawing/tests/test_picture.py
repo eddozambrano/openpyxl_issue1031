@@ -2,17 +2,18 @@
 
 import pytest
 
-from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
+from openpyxl.xml.functions import fromstring, tostring
 
 
 @pytest.fixture
 def PictureLocking():
     from ..picture import PictureLocking
+
     return PictureLocking
 
-class TestPictureLocking:
 
+class TestPictureLocking:
     def test_ctor(self, PictureLocking):
         graphic = PictureLocking(noChangeAspect=True)
         xml = tostring(graphic.to_tree())
@@ -21,7 +22,6 @@ class TestPictureLocking:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, PictureLocking):
         src = """
@@ -35,11 +35,11 @@ class TestPictureLocking:
 @pytest.fixture
 def NonVisualPictureProperties():
     from ..picture import NonVisualPictureProperties
+
     return NonVisualPictureProperties
 
 
 class TestNonVisualPictureProperties:
-
     def test_ctor(self, NonVisualPictureProperties):
         graphic = NonVisualPictureProperties()
         xml = tostring(graphic.to_tree())
@@ -48,7 +48,6 @@ class TestNonVisualPictureProperties:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, NonVisualPictureProperties):
         src = """
@@ -59,15 +58,14 @@ class TestNonVisualPictureProperties:
         assert graphic == NonVisualPictureProperties()
 
 
-
 @pytest.fixture
 def PictureNonVisual():
     from ..picture import PictureNonVisual
+
     return PictureNonVisual
 
 
 class TestPictureNonVisual:
-
     def test_ctor(self, PictureNonVisual):
         graphic = PictureNonVisual()
         xml = tostring(graphic.to_tree())
@@ -79,7 +77,6 @@ class TestPictureNonVisual:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, PictureNonVisual):
         src = """
@@ -93,15 +90,14 @@ class TestPictureNonVisual:
         assert graphic == PictureNonVisual()
 
 
-
 @pytest.fixture
 def PictureFrame():
     from ..picture import PictureFrame
+
     return PictureFrame
 
 
 class TestPicture:
-
     def test_ctor(self, PictureFrame):
         graphic = PictureFrame()
         xml = tostring(graphic.to_tree())
@@ -125,7 +121,6 @@ class TestPicture:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, PictureFrame):
         src = """

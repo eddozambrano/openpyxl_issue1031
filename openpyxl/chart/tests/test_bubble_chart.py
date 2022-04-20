@@ -2,17 +2,18 @@
 
 import pytest
 
-from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
+from openpyxl.xml.functions import fromstring, tostring
+
 
 @pytest.fixture
 def BubbleChart():
     from ..bubble_chart import BubbleChart
+
     return BubbleChart
 
 
 class TestBubbleChart:
-
     def test_ctor(self, BubbleChart):
         bubble_chart = BubbleChart()
         xml = tostring(bubble_chart.to_tree())
@@ -24,7 +25,6 @@ class TestBubbleChart:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, BubbleChart):
         src = """

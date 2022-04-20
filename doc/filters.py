@@ -18,7 +18,7 @@ data = [
     ["Blackberry", 3],
     ["Orange", 3],
     ["Raspberry", 3],
-    ["Banana", 3]
+    ["Banana", 3],
 ]
 
 for r in data:

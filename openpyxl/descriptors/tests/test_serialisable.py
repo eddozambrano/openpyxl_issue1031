@@ -2,22 +2,22 @@
 
 import pytest
 
-from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
+from openpyxl.xml.functions import fromstring, tostring
 
 
 @pytest.fixture
 def Serialisable():
     from ..serialisable import Serialisable
+
     return Serialisable
 
 
 @pytest.fixture
 def Immutable(Serialisable):
-
     class Immutable(Serialisable):
 
-        __attrs__ = ('value',)
+        __attrs__ = ("value",)
 
         def __init__(self, value=None):
             self.value = value
@@ -26,30 +26,32 @@ def Immutable(Serialisable):
 
 
 class TestSerialisable:
-
     def test_hash(self, Immutable):
         d1 = Immutable()
         d2 = Immutable()
         assert hash(d1) == hash(d2)
-
 
     def test_add_attrs(self, Immutable):
         d1 = Immutable()
         d2 = Immutable(value=2)
         assert d1 + d2 == d2
 
-
     def test_str(self, Immutable):
         d = Immutable()
-        assert str(d) == """<openpyxl.descriptors.tests.test_serialisable.Immutable object>
+        assert (
+            str(d)
+            == """<openpyxl.descriptors.tests.test_serialisable.Immutable object>
 Parameters:
 value=None"""
+        )
 
         d2 = Immutable("hello")
-        assert str(d2) == """<openpyxl.descriptors.tests.test_serialisable.Immutable object>
+        assert (
+            str(d2)
+            == """<openpyxl.descriptors.tests.test_serialisable.Immutable object>
 Parameters:
 value='hello'"""
-
+        )
 
     def test_eq(self, Immutable):
         d1 = Immutable(1)
@@ -57,16 +59,15 @@ value='hello'"""
         assert d1 is not d2
         assert d1 == d2
 
-
     def test_ne(self, Immutable):
         d1 = Immutable(1)
         d2 = Immutable(2)
         assert d1 != d2
 
-
     def test_copy(self, Immutable):
         d1 = Immutable({})
         from copy import copy
+
         d2 = copy(d1)
         assert d1.value is not d2.value
 
@@ -88,14 +89,14 @@ def Relation(Serialisable):
 
 
 class TestRelation:
-
-
     def test_binding(self, Relation):
 
-        assert Relation.__namespaced__ ==  (
-            ("rId", "{http://schemas.openxmlformats.org/officeDocument/2006/relationships}rId"),
-            )
-
+        assert Relation.__namespaced__ == (
+            (
+                "rId",
+                "{http://schemas.openxmlformats.org/officeDocument/2006/relationships}rId",
+            ),
+        )
 
     def test_to_tree(self, Relation):
 
@@ -107,7 +108,6 @@ class TestRelation:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_tree(self, Relation):
         src = """
@@ -134,8 +134,6 @@ def KeywordAttribute(Serialisable):
 
 
 class TestKeywordAttribute:
-
-
     def test_to_tree(self, KeywordAttribute):
 
         dummy = KeywordAttribute(_from=True)
@@ -145,7 +143,6 @@ class TestKeywordAttribute:
 
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_tree(self, KeywordAttribute):
         src = """<dummy from="1" />"""
@@ -188,8 +185,6 @@ def KeywordNode(Serialisable, Node):
 
 
 class TestKeywordNode:
-
-
     def test_to_tree(self, KeywordNode, Node):
 
         n = Node(val=True)
@@ -201,7 +196,6 @@ class TestKeywordNode:
 
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_tree(self, KeywordNode):
         src = """<dummy><from val="1" /></dummy>"""
@@ -229,7 +223,6 @@ def HyphenatedAttribute(Serialisable):
 
 
 class TestHyphenatedAttribute:
-
     def test_to_tree(self, HyphenatedAttribute):
 
         dummy = HyphenatedAttribute(z_order=True, a_order=True)
@@ -239,7 +232,6 @@ class TestHyphenatedAttribute:
 
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_tree(self, HyphenatedAttribute):
         src = """<dummy z-order="1" a_order="1" />"""

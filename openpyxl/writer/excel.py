@@ -5,40 +5,43 @@
 # Python stdlib imports
 import re
 from tempfile import TemporaryFile
-from zipfile import ZipFile, ZIP_DEFLATED
+from zipfile import ZIP_DEFLATED, ZipFile
+
+from openpyxl.comments.comment_sheet import CommentSheet
 
 # package imports
 from openpyxl.compat import deprecated
-from openpyxl.utils.exceptions import InvalidFileException
-from openpyxl.xml.constants import (
-    ARC_SHARED_STRINGS,
-    ARC_CONTENT_TYPES,
-    ARC_ROOT_RELS,
-    ARC_WORKBOOK_RELS,
-    ARC_APP, ARC_CORE,
-    ARC_THEME,
-    ARC_STYLE,
-    ARC_WORKBOOK,
-    PACKAGE_WORKSHEETS,
-    PACKAGE_CHARTSHEETS,
-    PACKAGE_DRAWINGS,
-    PACKAGE_CHARTS,
-    PACKAGE_IMAGES,
-    PACKAGE_XL
-    )
 from openpyxl.drawing.spreadsheet_drawing import SpreadsheetDrawing
-from openpyxl.xml.functions import tostring, fromstring, Element
+from openpyxl.packaging.extended import ExtendedProperties
 from openpyxl.packaging.manifest import Manifest
 from openpyxl.packaging.relationship import (
-    get_rels_path,
-    RelationshipList,
     Relationship,
+    RelationshipList,
+    get_rels_path,
 )
-from openpyxl.comments.comment_sheet import CommentSheet
-from openpyxl.packaging.extended import ExtendedProperties
 from openpyxl.styles.stylesheet import write_stylesheet
-from openpyxl.worksheet._writer import WorksheetWriter
+from openpyxl.utils.exceptions import InvalidFileException
 from openpyxl.workbook._writer import WorkbookWriter
+from openpyxl.worksheet._writer import WorksheetWriter
+from openpyxl.xml.constants import (
+    ARC_APP,
+    ARC_CONTENT_TYPES,
+    ARC_CORE,
+    ARC_ROOT_RELS,
+    ARC_SHARED_STRINGS,
+    ARC_STYLE,
+    ARC_THEME,
+    ARC_WORKBOOK,
+    ARC_WORKBOOK_RELS,
+    PACKAGE_CHARTS,
+    PACKAGE_CHARTSHEETS,
+    PACKAGE_DRAWINGS,
+    PACKAGE_IMAGES,
+    PACKAGE_WORKSHEETS,
+    PACKAGE_XL,
+)
+from openpyxl.xml.functions import Element, fromstring, tostring
+
 from .theme import theme_xml
 
 
@@ -56,7 +59,6 @@ class ExcelWriter(object):
         self._drawings = []
         self._comments = []
         self._pivots = []
-
 
     def write_data(self):
         """Write the various xml files into the zip archive."""
@@ -77,8 +79,8 @@ class ExcelWriter(object):
         self._write_images()
         self._write_charts()
 
-        #self._archive.writestr(ARC_SHARED_STRINGS,
-                              #write_string_table(self.workbook.shared_strings))
+        # self._archive.writestr(ARC_SHARED_STRINGS,
+        # write_string_table(self.workbook.shared_strings))
         self._write_external_links()
 
         stylesheet = write_stylesheet(self.workbook)
@@ -98,32 +100,38 @@ class ExcelWriter(object):
         If workbook contains macros then extract associated files from cache
         of old file and add to archive
         """
-        ARC_VBA = re.compile("|".join(
-            ('xl/vba', r'xl/drawings/.*vmlDrawing\d\.vml',
-             'xl/ctrlProps', 'customUI', 'xl/activeX', r'xl/media/.*\.emf')
+        ARC_VBA = re.compile(
+            "|".join(
+                (
+                    "xl/vba",
+                    r"xl/drawings/.*vmlDrawing\d\.vml",
+                    "xl/ctrlProps",
+                    "customUI",
+                    "xl/activeX",
+                    r"xl/media/.*\.emf",
+                )
+            )
         )
-                             )
 
         if self.workbook.vba_archive:
             for name in set(self.workbook.vba_archive.namelist()) - self.vba_modified:
                 if ARC_VBA.match(name):
                     self._archive.writestr(name, self.workbook.vba_archive.read(name))
 
-
     def _write_images(self):
         # delegate to object
         for img in self._images:
             self._archive.writestr(img.path[1:], img._data())
 
-
     def _write_charts(self):
         # delegate to object
         if len(self._charts) != len(set(self._charts)):
-            raise InvalidFileException("The same chart cannot be used in more than one worksheet")
+            raise InvalidFileException(
+                "The same chart cannot be used in more than one worksheet"
+            )
         for chart in self._charts:
             self._archive.writestr(chart.path[1:], tostring(chart._write()))
             self.manifest.append(chart)
-
 
     def _write_drawing(self, drawing):
         """
@@ -141,7 +149,6 @@ class ExcelWriter(object):
         self._archive.writestr(drawing.path[1:], tostring(drawing._write()))
         self._archive.writestr(rels_path, tostring(drawing._write_rels()))
         self.manifest.append(drawing)
-
 
     def _write_chartsheets(self):
         for idx, sheet in enumerate(self.workbook.chartsheets, 1):
@@ -163,7 +170,6 @@ class ExcelWriter(object):
                 rels_path = get_rels_path(sheet.path[1:])
                 self._archive.writestr(rels_path, tostring(tree))
 
-
     def _write_comment(self, ws):
 
         cs = CommentSheet.from_comments(ws._comments)
@@ -173,7 +179,7 @@ class ExcelWriter(object):
         self.manifest.append(cs)
 
         if ws.legacy_drawing is None or self.workbook.vba_archive is None:
-            ws.legacy_drawing = 'xl/drawings/commentsDrawing{0}.vml'.format(cs._id)
+            ws.legacy_drawing = "xl/drawings/commentsDrawing{0}.vml".format(cs._id)
             vml = None
         else:
             vml = fromstring(self.workbook.vba_archive.read(ws.legacy_drawing))
@@ -185,7 +191,6 @@ class ExcelWriter(object):
 
         comment_rel = Relationship(Id="comments", type=cs._rel_type, Target=cs.path)
         ws._rels.append(comment_rel)
-
 
     def write_worksheet(self, ws):
         ws._drawing = SpreadsheetDrawing()
@@ -203,7 +208,6 @@ class ExcelWriter(object):
         self._archive.write(writer.out, ws.path[1:])
         self.manifest.append(ws)
         writer.cleanup()
-
 
     def _write_worksheets(self):
 
@@ -225,8 +229,9 @@ class ExcelWriter(object):
                 self._write_comment(ws)
 
             if ws.legacy_drawing is not None:
-                shape_rel = Relationship(type="vmlDrawing", Id="anysvml",
-                                         Target="/" + ws.legacy_drawing)
+                shape_rel = Relationship(
+                    type="vmlDrawing", Id="anysvml", Target="/" + ws.legacy_drawing
+                )
                 ws._rels.append(shape_rel)
 
             for t in ws._tables.values():
@@ -253,7 +258,6 @@ class ExcelWriter(object):
                 rels_path = get_rels_path(ws.path)[1:]
                 self._archive.writestr(rels_path, tostring(tree))
 
-
     def _write_external_links(self):
         # delegate to object
         """Write links to external workbooks"""
@@ -268,7 +272,6 @@ class ExcelWriter(object):
             rels.append(link.file_link)
             self._archive.writestr(rels_path, tostring(rels.to_tree()))
             self.manifest.append(link)
-
 
     def save(self):
         """Write data into the archive."""
@@ -288,7 +291,7 @@ def save_workbook(workbook, filename):
     :rtype: bool
 
     """
-    archive = ZipFile(filename, 'w', ZIP_DEFLATED, allowZip64=True)
+    archive = ZipFile(filename, "w", ZIP_DEFLATED, allowZip64=True)
     writer = ExcelWriter(workbook, archive)
     writer.save()
     return True
@@ -298,7 +301,7 @@ def save_workbook(workbook, filename):
 def save_virtual_workbook(workbook):
     """Return an in-memory workbook, suitable for a Django response."""
     tmp = TemporaryFile()
-    archive = ZipFile(tmp, 'w', ZIP_DEFLATED, allowZip64=True)
+    archive = ZipFile(tmp, "w", ZIP_DEFLATED, allowZip64=True)
 
     writer = ExcelWriter(workbook, archive)
     writer.save()

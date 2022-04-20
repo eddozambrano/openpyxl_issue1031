@@ -6,12 +6,11 @@ from .cell import (
     cols_from_range,
     column_index_from_string,
     coordinate_to_tuple,
-    get_column_letter,
     get_column_interval,
+    get_column_letter,
     quote_sheetname,
     range_boundaries,
     range_to_tuple,
     rows_from_range,
 )
-
 from .formulas import FORMULAE

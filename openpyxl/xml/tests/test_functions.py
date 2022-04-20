@@ -1,21 +1,22 @@
 # Copyright (c) 2010-2021 openpyxl
 
+from io import BytesIO
+
 import pytest
 
-from io import BytesIO
 from ..functions import fromstring, iterparse
 
 
-
-@pytest.mark.parametrize("xml, tag",
-                         [
-                             ("<root xmlns='http://openpyxl.org/ns' />", "root"),
-                             ("<root />", "root"),
-                         ]
-                         )
+@pytest.mark.parametrize(
+    "xml, tag",
+    [
+        ("<root xmlns='http://openpyxl.org/ns' />", "root"),
+        ("<root />", "root"),
+    ],
+)
 def test_localtag(xml, tag):
-    from .. functions import localname
-    from .. functions import fromstring
+    from ..functions import fromstring, localname
+
     node = fromstring(xml)
     assert localname(node) == tag
 
@@ -51,6 +52,7 @@ vulnerable_xml_strings = (
 @pytest.mark.parametrize("xml_input", vulnerable_xml_strings)
 def test_fromstring(xml_input):
     from defusedxml.common import DefusedXmlException
+
     with pytest.raises(DefusedXmlException):
         fromstring(xml_input)
 
@@ -59,6 +61,7 @@ def test_fromstring(xml_input):
 @pytest.mark.parametrize("xml_input", vulnerable_xml_strings)
 def test_iterparse(xml_input):
     from defusedxml.common import DefusedXmlException
+
     with pytest.raises(DefusedXmlException):
         f = BytesIO(xml_input)
         list(iterparse(f))

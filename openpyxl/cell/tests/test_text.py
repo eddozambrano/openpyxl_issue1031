@@ -2,18 +2,18 @@
 # Copyright (c) 2010-2021 openpyxl
 import pytest
 
-from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
+from openpyxl.xml.functions import fromstring, tostring
 
 
 @pytest.fixture
 def InlineFont():
     from ..text import InlineFont
+
     return InlineFont
 
 
 class TestInlineFont:
-
     def test_ctor(self, InlineFont):
         font = InlineFont()
         xml = tostring(font.to_tree())
@@ -22,7 +22,6 @@ class TestInlineFont:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, InlineFont):
         src = """
@@ -36,11 +35,11 @@ class TestInlineFont:
 @pytest.fixture
 def RichText():
     from ..text import RichText
+
     return RichText
 
 
 class TestRichText:
-
     def test_ctor(self, RichText):
         text = RichText()
         xml = tostring(text.to_tree())
@@ -49,7 +48,6 @@ class TestRichText:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, RichText):
         src = """
@@ -63,11 +61,11 @@ class TestRichText:
 @pytest.fixture
 def Text():
     from ..text import Text
+
     return Text
 
 
 class TestText:
-
     def test_ctor(self, Text):
         text = Text()
         text.plain = "comment"
@@ -80,11 +78,12 @@ class TestText:
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 
-
-    @pytest.mark.parametrize("src, expected",
-                             [
-                                 ("""<is><t>ID</t></is>""", "ID"),
-                                 ("""
+    @pytest.mark.parametrize(
+        "src, expected",
+        [
+            ("""<is><t>ID</t></is>""", "ID"),
+            (
+                """
                                  <is>
                                    <r>
                                      <rPr />
@@ -92,15 +91,14 @@ class TestText:
                                    </r>
                                  </is>
                                  """,
-                                  "11 de September de 2014"
-                                  ),
-                             ]
-                             )
+                "11 de September de 2014",
+            ),
+        ],
+    )
     def test_from_xml(self, Text, src, expected):
         node = fromstring(src)
         text = Text.from_tree(node)
         assert text.content == expected
-
 
     def test_empty_element(self, Text):
         src = """
@@ -128,13 +126,13 @@ class TestText:
 @pytest.fixture
 def PhoneticText():
     from ..text import PhoneticText
+
     return PhoneticText
 
 
 class TestPhoneticText:
-
     def test_ctor(self, PhoneticText):
-        text = PhoneticText(sb=9, eb=10, t=u'\u3088')
+        text = PhoneticText(sb=9, eb=10, t="\u3088")
         xml = tostring(text.to_tree())
         expected = b"""
         <rPh sb="9" eb="10">
@@ -144,7 +142,6 @@ class TestPhoneticText:
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 
-
     def test_from_xml(self, PhoneticText):
         src = b"""
         <rPh sb="9" eb="10">
@@ -153,17 +150,17 @@ class TestPhoneticText:
         """
         node = fromstring(src)
         text = PhoneticText.from_tree(node)
-        assert text == PhoneticText(sb=9, eb=10, t=u'\u3088')
+        assert text == PhoneticText(sb=9, eb=10, t="\u3088")
 
 
 @pytest.fixture
 def PhoneticProperties():
     from ..text import PhoneticProperties
+
     return PhoneticProperties
 
 
 class TestPhoneticProperties:
-
     def test_ctor(self, PhoneticProperties):
         props = PhoneticProperties(fontId=0, type="Hiragana")
         xml = tostring(props.to_tree())
@@ -172,7 +169,6 @@ class TestPhoneticProperties:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, PhoneticProperties):
         src = """

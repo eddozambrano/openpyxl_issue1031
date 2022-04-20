@@ -1,46 +1,48 @@
 # Copyright (c) 2010-2021 openpyxl
 
-from openpyxl.styles.named_styles import NamedStyleList
-import pytest
-
 import datetime
 from io import BytesIO
 
-from lxml.etree import iterparse, fromstring
+import pytest
+from lxml.etree import fromstring, iterparse
 
-from openpyxl.xml.constants import SHEET_MAIN_NS
-from openpyxl.utils.indexed_list import IndexedList
+from openpyxl.formula.translate import Translator
 from openpyxl.packaging.relationship import Relationship, RelationshipList
-from openpyxl.utils.datetime  import CALENDAR_WINDOWS_1900, CALENDAR_MAC_1904
-from openpyxl.styles.styleable import StyleArray
 from openpyxl.styles.borders import DEFAULT_BORDER
 from openpyxl.styles.differential import DifferentialStyle
-from openpyxl.formula.translate import Translator
-from ..worksheet import Worksheet
-from ..pagebreak import Break, RowBreak, ColBreak
-from ..scenario import ScenarioList, Scenario, InputCells
+from openpyxl.styles.named_styles import NamedStyleList
+from openpyxl.styles.styleable import StyleArray
+from openpyxl.utils.datetime import CALENDAR_MAC_1904, CALENDAR_WINDOWS_1900
+from openpyxl.utils.indexed_list import IndexedList
+from openpyxl.xml.constants import SHEET_MAIN_NS
 
-@pytest.mark.parametrize("value, expected",
-                         [
-                             ('4.2', 4.2),
-                             ('-42.000', -42),
-                             ('0', 0),
-                             ('0.9999', 0.9999),
-                             ('99E-02', 0.99),
-                             ('4', 4),
-                             ('-1E3', -1000),
-                             ('1E-3', 0.001),
-                             ('2e+2', 200.0),
-                         ]
-                         )
+from ..pagebreak import Break, ColBreak, RowBreak
+from ..scenario import InputCells, Scenario, ScenarioList
+from ..worksheet import Worksheet
+
+
+@pytest.mark.parametrize(
+    "value, expected",
+    [
+        ("4.2", 4.2),
+        ("-42.000", -42),
+        ("0", 0),
+        ("0.9999", 0.9999),
+        ("99E-02", 0.99),
+        ("4", 4),
+        ("-1E3", -1000),
+        ("1E-3", 0.001),
+        ("2e+2", 200.0),
+    ],
+)
 def test_number_convesion(value, expected):
     from .._reader import _cast_number
+
     assert _cast_number(value) == expected
 
 
 @pytest.fixture
 def Workbook():
-
     class DummyWorkbook:
 
         data_only = False
@@ -50,13 +52,14 @@ def Workbook():
 
         def __init__(self):
             self._differential_styles = [DifferentialStyle()] * 5
-            self.shared_strings = ['a'] * 30
+            self.shared_strings = ["a"] * 30
             self._fonts = IndexedList()
             self._fills = IndexedList()
             self._number_formats = IndexedList()
             self._borders = IndexedList([DEFAULT_BORDER] * 30)
             self._alignments = IndexedList()
             from openpyxl.styles import Protection
+
             prot_1 = Protection(locked=False)
             prot_2 = Protection(locked=True)
             self._protections = IndexedList()
@@ -66,12 +69,18 @@ def Workbook():
             self._named_styles = NamedStyleList()
             self.vba_archive = None
             for i in range(23):
-                self._cell_styles.add((StyleArray([i]*9)))
-            self._cell_styles.add(StyleArray([0,4,6,0,1,1,0,0,0])) #fillId=4, borderId=6, alignmentId=1 ,protectionId=1))
-            self._cell_styles.add(StyleArray([0,4,6,0,0,0,0,0,0])) #fillId=4, borderId=6, alignmentId=0 ,protectionId=0))
-            for i in range(25,29):
-                self._cell_styles.add((StyleArray([i]*9)))
-            self._cell_styles.add(StyleArray([0,4,6,0,0,1,0,0,0])) #fillId=4, borderId=6, alignmentId=1))
+                self._cell_styles.add((StyleArray([i] * 9)))
+            self._cell_styles.add(
+                StyleArray([0, 4, 6, 0, 1, 1, 0, 0, 0])
+            )  # fillId=4, borderId=6, alignmentId=1 ,protectionId=1))
+            self._cell_styles.add(
+                StyleArray([0, 4, 6, 0, 0, 0, 0, 0, 0])
+            )  # fillId=4, borderId=6, alignmentId=0 ,protectionId=0))
+            for i in range(25, 29):
+                self._cell_styles.add((StyleArray([i] * 9)))
+            self._cell_styles.add(
+                StyleArray([0, 4, 6, 0, 0, 1, 0, 0, 0])
+            )  # fillId=4, borderId=6, alignmentId=1))
             self.sheetnames = []
             self._date_formats = set()
             self._timedelta_formats = set()
@@ -89,24 +98,31 @@ def WorkSheetParser():
 
     styles = IndexedList()
     for i in range(29):
-        styles.add((StyleArray([i]*9)))
-    styles.add(StyleArray([0,4,6,14,0,1,0,0,0])) #fillId=4, borderId=6, number_format=14 alignmentId=1))
+        styles.add((StyleArray([i] * 9)))
+    styles.add(
+        StyleArray([0, 4, 6, 14, 0, 1, 0, 0, 0])
+    )  # fillId=4, borderId=6, number_format=14 alignmentId=1))
     date_formats = set([1, 29, 30])
     timedelta_formats = set([30])
-    return WorkSheetParser(None, {0:'a'}, date_formats=date_formats, timedelta_formats=timedelta_formats)
+    return WorkSheetParser(
+        None, {0: "a"}, date_formats=date_formats, timedelta_formats=timedelta_formats
+    )
+
 
 from warnings import simplefilter
+
 simplefilter("always")
 
-class TestWorksheetParser:
 
-    @pytest.mark.parametrize("filename, expected",
-                             [
-                                 ("dimension.xml", (4, 1, 27, 30)),
-                                 ("no_dimension.xml", None),
-                                 ("invalid_dimension.xml", (None, 1, None, 113)),
-                              ]
-                             )
+class TestWorksheetParser:
+    @pytest.mark.parametrize(
+        "filename, expected",
+        [
+            ("dimension.xml", (4, 1, 27, 30)),
+            ("no_dimension.xml", None),
+            ("invalid_dimension.xml", (None, 1, None, 113)),
+        ],
+    )
     def test_read_dimension(self, WorkSheetParser, datadir, filename, expected):
         datadir.chdir()
         parser = WorkSheetParser
@@ -115,18 +131,21 @@ class TestWorksheetParser:
         dimension = parser.parse_dimensions()
         assert dimension == expected
 
-
     def test_col_width(self, datadir, WorkSheetParser):
         datadir.chdir()
         parser = WorkSheetParser
         with open("complex-styles-worksheet.xml", "rb") as src:
-            cols = iterparse(src, tag='{%s}col' % SHEET_MAIN_NS)
+            cols = iterparse(src, tag="{%s}col" % SHEET_MAIN_NS)
             for _, col in cols:
                 parser.parse_column_dimensions(col)
-        assert set(parser.column_dimensions) == set(['A', 'C', 'E', 'I', 'G'])
-        assert parser.column_dimensions['A'] == {'max': '1', 'min': '1',
-                                                 'index':'A', 'customWidth': '1', 'width': '31.1640625'}
-
+        assert set(parser.column_dimensions) == set(["A", "C", "E", "I", "G"])
+        assert parser.column_dimensions["A"] == {
+            "max": "1",
+            "min": "1",
+            "index": "A",
+            "customWidth": "1",
+            "width": "31.1640625",
+        }
 
     def test_hidden_col(self, WorkSheetParser):
         parser = WorkSheetParser
@@ -135,23 +154,34 @@ class TestWorksheetParser:
         element = fromstring(src)
 
         parser.parse_column_dimensions(element)
-        assert 'D' in parser.column_dimensions
-        assert parser.column_dimensions['D'] == {'customWidth': '1', 'width':'0',
-                                                 'hidden': '1', 'max': '4', 'min': '4', 'index':'D'}
-
+        assert "D" in parser.column_dimensions
+        assert parser.column_dimensions["D"] == {
+            "customWidth": "1",
+            "width": "0",
+            "hidden": "1",
+            "max": "4",
+            "min": "4",
+            "index": "D",
+        }
 
     def test_styled_col(self, datadir, WorkSheetParser):
         datadir.chdir()
         parser = WorkSheetParser
 
         with open("complex-styles-worksheet.xml", "rb") as src:
-            cols = iterparse(src, tag='{%s}col' % SHEET_MAIN_NS)
+            cols = iterparse(src, tag="{%s}col" % SHEET_MAIN_NS)
             for _, col in cols:
                 parser.parse_column_dimensions(col)
-        assert 'I' in parser.column_dimensions
-        cd = parser.column_dimensions['I']
-        assert cd ==  {'customWidth': '1', 'max': '9', 'min': '9', 'width': '25', 'index':'I', 'style':'28'}
-
+        assert "I" in parser.column_dimensions
+        cd = parser.column_dimensions["I"]
+        assert cd == {
+            "customWidth": "1",
+            "max": "9",
+            "min": "9",
+            "width": "25",
+            "index": "I",
+            "style": "28",
+        }
 
     def test_row_dimensions(self, WorkSheetParser):
         src = """<row r="2" spans="1:6" />"""
@@ -162,7 +192,6 @@ class TestWorksheetParser:
 
         assert 2 not in parser.row_dimensions
 
-
     def test_hidden_row(self, WorkSheetParser):
         parser = WorkSheetParser
 
@@ -172,8 +201,7 @@ class TestWorksheetParser:
         element = fromstring(src)
 
         parser.parse_row(element)
-        assert parser.row_dimensions['2'] == {'r': '2', 'spans': '1:4', 'hidden':'1'}
-
+        assert parser.row_dimensions["2"] == {"r": "2", "spans": "1:4", "hidden": "1"}
 
     def test_styled_row(self, datadir, WorkSheetParser):
         parser = WorkSheetParser
@@ -181,9 +209,8 @@ class TestWorksheetParser:
         element = fromstring(src)
 
         parser.parse_row(element)
-        rd = parser.row_dimensions['23']
-        assert rd == {'r': '23', 's': '28', 'spans': '1:8'}
-
+        rd = parser.row_dimensions["23"]
+        assert rd == {"r": "23", "s": "28", "spans": "1:8"}
 
     def test_read_row_with_exponent(self, WorkSheetParser):
         parser = WorkSheetParser
@@ -192,14 +219,12 @@ class TestWorksheetParser:
         parser.parse_row(element)
         assert parser.row_counter == 1048573
 
-
     def test_invalid_row_number(self, WorkSheetParser):
         parser = WorkSheetParser
         src = """<row r="1.5" spans="1:8" /> """
         element = fromstring(src)
         with pytest.raises(ValueError):
             parser.parse_row(element)
-
 
     def test_sheet_protection(self, datadir, WorkSheetParser):
         parser = WorkSheetParser
@@ -211,14 +236,24 @@ class TestWorksheetParser:
         parser.parse_sheet_protection(element)
 
         assert dict(parser.protection) == {
-            'autoFilter': '0', 'deleteColumns': '0',
-            'deleteRows': '0', 'formatCells': '0', 'formatColumns': '0', 'formatRows':
-            '0', 'insertColumns': '0', 'insertHyperlinks': '0', 'insertRows': '0',
-            'objects': '0', 'password': 'DAA7', 'pivotTables': '0', 'scenarios': '0',
-            'selectLockedCells': '0', 'selectUnlockedCells': '0', 'sheet': '1', 'sort':
-            '0'
+            "autoFilter": "0",
+            "deleteColumns": "0",
+            "deleteRows": "0",
+            "formatCells": "0",
+            "formatColumns": "0",
+            "formatRows": "0",
+            "insertColumns": "0",
+            "insertHyperlinks": "0",
+            "insertRows": "0",
+            "objects": "0",
+            "password": "DAA7",
+            "pivotTables": "0",
+            "scenarios": "0",
+            "selectLockedCells": "0",
+            "selectUnlockedCells": "0",
+            "sheet": "1",
+            "sort": "0",
         }
-
 
     def test_formula(self, WorkSheetParser):
         parser = WorkSheetParser
@@ -232,9 +267,13 @@ class TestWorksheetParser:
         element = fromstring(src)
 
         cell = parser.parse_cell(element)
-        assert cell == {'column': 1, 'data_type': 'f', 'row': 1,
-                        'style_id':0, 'value': '=IF(TRUE, "y", "n")'}
-
+        assert cell == {
+            "column": 1,
+            "data_type": "f",
+            "row": 1,
+            "style_id": 0,
+            "value": '=IF(TRUE, "y", "n")',
+        }
 
     def test_formula_data_only(self, WorkSheetParser):
         parser = WorkSheetParser
@@ -249,9 +288,13 @@ class TestWorksheetParser:
         element = fromstring(src)
 
         cell = parser.parse_cell(element)
-        assert cell == {'column': 1, 'data_type': 'n', 'row': 1,
-                        'style_id':0, 'value': 3}
-
+        assert cell == {
+            "column": 1,
+            "data_type": "n",
+            "row": 1,
+            "style_id": 0,
+            "value": 3,
+        }
 
     def test_string_formula_data_only(self, WorkSheetParser):
         parser = WorkSheetParser
@@ -266,9 +309,13 @@ class TestWorksheetParser:
         element = fromstring(src)
 
         cell = parser.parse_cell(element)
-        assert cell == {'column': 1, 'data_type': 's', 'row': 1,
-                        'style_id':0, 'value': 'y'}
-
+        assert cell == {
+            "column": 1,
+            "data_type": "s",
+            "row": 1,
+            "style_id": 0,
+            "value": "y",
+        }
 
     def test_number(self, WorkSheetParser):
         parser = WorkSheetParser
@@ -281,10 +328,13 @@ class TestWorksheetParser:
         element = fromstring(src)
 
         cell = parser.parse_cell(element)
-        assert cell == {'column': 1, 'data_type': 'n', 'row': 1,
-                        'style_id':0, 'value': 1}
-
-
+        assert cell == {
+            "column": 1,
+            "data_type": "n",
+            "row": 1,
+            "style_id": 0,
+            "value": 1,
+        }
 
     def test_datetime(self, WorkSheetParser):
         parser = WorkSheetParser
@@ -297,9 +347,13 @@ class TestWorksheetParser:
         element = fromstring(src)
 
         cell = parser.parse_cell(element)
-        assert cell == {'column': 1, 'data_type': 'd', 'row': 1,
-                        'style_id':0, 'value': datetime.datetime(2011, 12, 25, 14, 23, 55)}
-
+        assert cell == {
+            "column": 1,
+            "data_type": "d",
+            "row": 1,
+            "style_id": 0,
+            "value": datetime.datetime(2011, 12, 25, 14, 23, 55),
+        }
 
     def test_timedelta(self, WorkSheetParser):
         parser = WorkSheetParser
@@ -312,9 +366,13 @@ class TestWorksheetParser:
         element = fromstring(src)
 
         cell = parser.parse_cell(element)
-        assert cell == {'column': 1, 'data_type': 'd', 'row': 1,
-                        'style_id':30, 'value':datetime.timedelta(days=1, hours=6)}
-
+        assert cell == {
+            "column": 1,
+            "data_type": "d",
+            "row": 1,
+            "style_id": 30,
+            "value": datetime.timedelta(days=1, hours=6),
+        }
 
     def test_mac_date(self, WorkSheetParser):
         parser = WorkSheetParser
@@ -328,14 +386,21 @@ class TestWorksheetParser:
         element = fromstring(src)
 
         cell = parser.parse_cell(element)
-        assert cell == {'column': 1, 'data_type': 'd', 'row': 1,
-                        'style_id':29, 'value':datetime.datetime(2016, 10, 3, 0, 0)}
+        assert cell == {
+            "column": 1,
+            "data_type": "d",
+            "row": 1,
+            "style_id": 29,
+            "value": datetime.datetime(2016, 10, 3, 0, 0),
+        }
 
-    @pytest.mark.parametrize("value", [
-        -693595,
-        2958466,
-                                       ]
-                             )
+    @pytest.mark.parametrize(
+        "value",
+        [
+            -693595,
+            2958466,
+        ],
+    )
     def test_out_of_range_datetime(self, WorkSheetParser, recwarn, value):
         parser = WorkSheetParser
         src = f"""
@@ -349,7 +414,6 @@ class TestWorksheetParser:
         w = recwarn.pop()
         assert issubclass(w.category, UserWarning)
 
-
     def test_string(self, WorkSheetParser):
         parser = WorkSheetParser
 
@@ -361,9 +425,13 @@ class TestWorksheetParser:
         element = fromstring(src)
 
         cell = parser.parse_cell(element)
-        assert cell == {'column': 1, 'data_type': 's', 'row': 1,
-                        'style_id':0, 'value':'a'}
-
+        assert cell == {
+            "column": 1,
+            "data_type": "s",
+            "row": 1,
+            "style_id": 0,
+            "value": "a",
+        }
 
     def test_boolean(self, WorkSheetParser):
         parser = WorkSheetParser
@@ -376,9 +444,13 @@ class TestWorksheetParser:
         element = fromstring(src)
 
         cell = parser.parse_cell(element)
-        assert cell == {'column': 1, 'data_type': 'b', 'row': 1,
-                        'style_id':0, 'value':True}
-
+        assert cell == {
+            "column": 1,
+            "data_type": "b",
+            "row": 1,
+            "style_id": 0,
+            "value": True,
+        }
 
     def test_inline_string(self, WorkSheetParser):
         parser = WorkSheetParser
@@ -393,9 +465,13 @@ class TestWorksheetParser:
         element = fromstring(src)
 
         cell = parser.parse_cell(element)
-        assert cell == {'column': 1, 'data_type': 's', 'row': 1,
-                        'style_id':0, 'value':"ID"}
-
+        assert cell == {
+            "column": 1,
+            "data_type": "s",
+            "row": 1,
+            "style_id": 0,
+            "value": "ID",
+        }
 
     def test_inline_richtext(self, WorkSheetParser):
         parser = WorkSheetParser
@@ -414,9 +490,13 @@ class TestWorksheetParser:
 
         element = fromstring(src)
         cell = parser.parse_cell(element)
-        assert cell == {'column': 18, 'data_type': 's', 'row': 2,
-                        'style_id':4, 'value':"11 de September de 2014"}
-
+        assert cell == {
+            "column": 18,
+            "data_type": "s",
+            "row": 2,
+            "style_id": 4,
+            "value": "11 de September de 2014",
+        }
 
     def test_sheet_views(self, WorkSheetParser):
         parser = WorkSheetParser
@@ -441,7 +521,6 @@ class TestWorksheetParser:
         assert view.zoomScale == 200
         assert len(view.selection) == 3
 
-
     def test_shared_formula(self, WorkSheetParser):
         parser = WorkSheetParser
         src = """
@@ -451,10 +530,9 @@ class TestWorksheetParser:
         </c>
         """
         element = fromstring(src)
-        parser.shared_formulae['0'] = Translator("=A4*B4", "A1")
+        parser.shared_formulae["0"] = Translator("=A4*B4", "A1")
         formula = parser.parse_formula(element)
         assert formula == "=A12*B12"
-
 
     def test_array_formula(self, WorkSheetParser, datadir):
         parser = WorkSheetParser
@@ -467,8 +545,7 @@ class TestWorksheetParser:
 
         formula = parser.parse_formula(element)
         assert formula == "=SUM(A10:A14*B10:B14)"
-        assert parser.array_formulae['C10']['ref'] == 'C10:C14'
-
+        assert parser.array_formulae["C10"]["ref"] == "C10:C14"
 
     def test_extended_conditional_formatting(self, WorkSheetParser, recwarn):
         parser = WorkSheetParser
@@ -500,7 +577,6 @@ class TestWorksheetParser:
         w = recwarn.pop()
         assert issubclass(w.category, UserWarning)
 
-
     def test_bad_conditional_format_rule(self, WorkSheetParser, recwarn):
         parser = WorkSheetParser
 
@@ -521,7 +597,6 @@ class TestWorksheetParser:
         parser.parse_formatting(element)
         w = recwarn.pop()
         assert issubclass(w.category, UserWarning)
-
 
     def test_cell_without_coordinates(self, WorkSheetParser):
         parser = WorkSheetParser
@@ -553,7 +628,6 @@ class TestWorksheetParser:
         assert parser.row_counter == 1
         assert parser.col_counter == 5
 
-
     def test_row_and_cell_without_coordinates(self, WorkSheetParser):
         parser = WorkSheetParser
         src = """
@@ -572,13 +646,12 @@ class TestWorksheetParser:
         element = fromstring(src)
         max_row, cells = parser.parse_row(element)
         expected = [
-            {'column': 1, 'row': 1, 'data_type': 'n', 'value': 2, 'style_id': 0},
-            {'column': 2, 'row': 1, 'data_type': 'n', 'value': 4, 'style_id': 0},
-            {'column': 3, 'row': 1, 'data_type': 'n', 'value': 3, 'style_id': 0},
+            {"column": 1, "row": 1, "data_type": "n", "value": 2, "style_id": 0},
+            {"column": 2, "row": 1, "data_type": "n", "value": 4, "style_id": 0},
+            {"column": 3, "row": 1, "data_type": "n", "value": 3, "style_id": 0},
         ]
         for expected_cell, cell in zip(expected, cells):
             assert expected_cell == cell
-
 
     def test_row_and_cell_skipping_coordinates(self, WorkSheetParser):
         parser = WorkSheetParser
@@ -601,15 +674,14 @@ class TestWorksheetParser:
         element = fromstring(src)
         _, cells = parser.parse_row(element)
         expected = [
-            {'column': 1, 'row': 1, 'data_type': 'n', 'value': 1, 'style_id': 0},
-            {'column': 4, 'row': 1, 'data_type': 'n', 'value': 2, 'style_id': 0},
-            {'column': 5, 'row': 1, 'data_type': 'n', 'value': 3, 'style_id': 0},
-            {'column': 7, 'row': 1, 'data_type': 'n', 'value': 4, 'style_id': 0},
+            {"column": 1, "row": 1, "data_type": "n", "value": 1, "style_id": 0},
+            {"column": 4, "row": 1, "data_type": "n", "value": 2, "style_id": 0},
+            {"column": 5, "row": 1, "data_type": "n", "value": 3, "style_id": 0},
+            {"column": 7, "row": 1, "data_type": "n", "value": 4, "style_id": 0},
         ]
         assert len(cells) == len(expected)
         for expected_cell, cell in zip(expected, cells):
             assert expected_cell == cell
-
 
     def test_second_row_cell_index_without_coordinates(self, WorkSheetParser):
         parser = WorkSheetParser
@@ -624,11 +696,10 @@ class TestWorksheetParser:
         parser.parse_row(element)
         max_row, cells = parser.parse_row(element)
         expected = [
-            {'column': 1, 'row': 2, 'data_type': 'n', 'value': 2, 'style_id': 0},
+            {"column": 1, "row": 2, "data_type": "n", "value": 2, "style_id": 0},
         ]
         for expected_cell, cell in zip(expected, cells):
             assert expected_cell == cell
-
 
     def test_external_hyperlinks(self, WorkSheetParser):
         src = b"""
@@ -646,7 +717,6 @@ class TestWorksheetParser:
         parser.parse()
         assert len(parser.hyperlinks.hyperlink) == 1
 
-
     def test_local_hyperlinks(self, WorkSheetParser):
         src = b"""
          <hyperlinks xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
@@ -660,7 +730,6 @@ class TestWorksheetParser:
             pass
 
         assert len(parser.hyperlinks.hyperlink) == 1
-
 
     def test_merge_cells(self, WorkSheetParser):
         src = b"""
@@ -681,7 +750,6 @@ class TestWorksheetParser:
 
         assert len(parser.merged_cells.mergeCell) == 3
 
-
     def test_conditonal_formatting(self, WorkSheetParser):
         src = b"""
         <sheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
@@ -699,7 +767,6 @@ class TestWorksheetParser:
         for _ in parser.parse():
             pass
         assert len(parser.formatting) == 2
-
 
     def test_sheet_properties(self, WorkSheetParser):
         src = b"""
@@ -720,7 +787,6 @@ class TestWorksheetParser:
         assert parser.sheet_properties.tabColor.rgb == "FF92D050"
         assert parser.sheet_properties.codeName == "Sheet3"
 
-
     def test_sheet_format(self, WorkSheetParser):
 
         src = b"""
@@ -737,7 +803,6 @@ class TestWorksheetParser:
         assert parser.sheet_format.defaultRowHeight == 14.25
         assert parser.sheet_format.baseColWidth == 15
 
-
     def test_tables(self, WorkSheetParser):
         src = b"""
         <tableParts count="1" xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"
@@ -752,7 +817,6 @@ class TestWorksheetParser:
             pass
 
         assert parser.tables.tablePart[0].id == "rId1"
-
 
     def test_auto_filter(self, WorkSheetParser):
         src = b"""
@@ -773,7 +837,6 @@ class TestWorksheetParser:
         assert parser.auto_filter.ref == "A1:AK3237"
         assert parser.auto_filter.sortState.ref == "A2:AM3269"
 
-
     def test_page_row_break(self, WorkSheetParser):
         src = b"""
         <rowBreaks count="1" manualBreakCount="1" xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
@@ -789,7 +852,6 @@ class TestWorksheetParser:
 
         assert parser.row_breaks == expected_pagebreak
 
-
     def test_col_break(self, WorkSheetParser):
         src = b"""
         <colBreaks count="1" manualBreakCount="1" xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
@@ -804,7 +866,6 @@ class TestWorksheetParser:
         parser.parse_col_breaks(el)
 
         assert parser.col_breaks == expected_pagebreak
-
 
     def test_scenarios(self, WorkSheetParser):
         src = b"""
@@ -823,11 +884,16 @@ class TestWorksheetParser:
             pass
 
         c = InputCells(r="B2", val="50000")
-        s = Scenario(name="Worst case", inputCells=[c], locked=True, user="User", comment="comment")
+        s = Scenario(
+            name="Worst case",
+            inputCells=[c],
+            locked=True,
+            user="User",
+            comment="comment",
+        )
         scenarios = ScenarioList(scenario=[s], current="0", show="0")
 
         assert parser.scenarios == scenarios
-
 
     def test_legacy(self, WorkSheetParser):
         src = """
@@ -839,7 +905,6 @@ class TestWorksheetParser:
 
         parser.parse_legacy(element)
         assert parser.legacy_drawing == "rId3"
-
 
     def test_custom_views_breaks(self, WorkSheetParser):
         src = b"""
@@ -867,6 +932,7 @@ class TestWorksheetParser:
 @pytest.fixture
 def WorksheetReader():
     from .._reader import WorksheetReader
+
     return WorksheetReader
 
 
@@ -881,17 +947,14 @@ def PrimedWorksheetReader(Workbook, WorksheetReader, datadir):
 
 
 class TestWorksheetReader:
-
-
     def test_cells(self, PrimedWorksheetReader):
         reader = PrimedWorksheetReader
         reader.bind_cells()
         ws = reader.ws
 
-        assert ws['C1'].value == 'a'
-        assert ws.formula_attributes == {'E2': {'ref':"E2:E11", 't':"array"}}
-        assert ws['E2'].value == "=C2:C11*D2:D11"
-
+        assert ws["C1"].value == "a"
+        assert ws.formula_attributes == {"E2": {"ref": "E2:E11", "t": "array"}}
+        assert ws["E2"].value == "=C2:C11*D2:D11"
 
     def test_formatting(self, PrimedWorksheetReader):
         reader = PrimedWorksheetReader
@@ -901,9 +964,8 @@ class TestWorksheetReader:
         reader.bind_formatting()
 
         fmts = ws.conditional_formatting
-        assert fmts['T1:T10'][-1].dxf == DifferentialStyle()
-        assert len(fmts['A1']) == 2
-
+        assert fmts["T1:T10"][-1].dxf == DifferentialStyle()
+        assert len(fmts["A1"]) == 2
 
     def test_merged(self, PrimedWorksheetReader):
         reader = PrimedWorksheetReader
@@ -914,10 +976,13 @@ class TestWorksheetReader:
 
         assert ws.merged_cells == "G18:H18 G23:H24 A18:B18"
 
-
-    @pytest.mark.parametrize(argnames="input_coordinate,expected_coordinate",
-                             argvalues=[("H18", "G18"), ("G18", "G18"), ("I18", None), ("H23", "G23")])
-    def test_normalize_merged_cell_link(self, PrimedWorksheetReader, input_coordinate, expected_coordinate):
+    @pytest.mark.parametrize(
+        argnames="input_coordinate,expected_coordinate",
+        argvalues=[("H18", "G18"), ("G18", "G18"), ("I18", None), ("H23", "G23")],
+    )
+    def test_normalize_merged_cell_link(
+        self, PrimedWorksheetReader, input_coordinate, expected_coordinate
+    ):
         reader = PrimedWorksheetReader
         reader.bind_cells()
         reader.bind_merged_cells()
@@ -928,7 +993,6 @@ class TestWorksheetReader:
             assert normalized is None
         else:
             assert normalized.coordinate == expected_coordinate
-
 
     def test_external_hyperlinks(self, PrimedWorksheetReader):
         reader = PrimedWorksheetReader
@@ -942,8 +1006,7 @@ class TestWorksheetReader:
 
         reader.bind_hyperlinks()
 
-        assert ws['A1'].hyperlink.target == "../"
-
+        assert ws["A1"].hyperlink.target == "../"
 
     def test_internal_hyperlinks(self, PrimedWorksheetReader):
         reader = PrimedWorksheetReader
@@ -957,9 +1020,8 @@ class TestWorksheetReader:
 
         reader.bind_hyperlinks()
 
-        assert ws['B4'].hyperlink.location == "'STP nn000TL-10, PKG 2.52'!A1"
-        assert ws['B4'].hyperlink.ref == "B4"
-
+        assert ws["B4"].hyperlink.location == "'STP nn000TL-10, PKG 2.52'!A1"
+        assert ws["B4"].hyperlink.ref == "B4"
 
     def test_merged_hyperlinks(self, PrimedWorksheetReader):
         reader = PrimedWorksheetReader
@@ -975,14 +1037,13 @@ class TestWorksheetReader:
         reader.bind_hyperlinks()
 
         assert ws.merged_cells == "G18:H18 G23:H24 A18:B18"
-        assert ws['A18'].hyperlink.display == 'http://test.com'
-        assert ws['B18'].hyperlink is None
+        assert ws["A18"].hyperlink.display == "http://test.com"
+        assert ws["B18"].hyperlink is None
 
         # Link referencing H24 should be placed on G23 because H24 is a merged cell
         # and G23 is the top-left cell in the merged range
         assert ws["G23"].hyperlink.tooltip == "openpyxl"
         assert ws["H24"].hyperlink is None
-
 
     def test_tables(self, PrimedWorksheetReader):
         reader = PrimedWorksheetReader
@@ -998,7 +1059,6 @@ class TestWorksheetReader:
 
         assert reader.tables == ["../tables/table1.xml"]
 
-
     def test_cols(self, PrimedWorksheetReader):
         reader = PrimedWorksheetReader
         reader.bind_cells()
@@ -1007,8 +1067,7 @@ class TestWorksheetReader:
         reader.bind_col_dimensions()
 
         assert len(ws.column_dimensions) == 5
-        assert ws.column_dimensions['I'].parent == ws
-
+        assert ws.column_dimensions["I"].parent == ws
 
     def test_rows(self, PrimedWorksheetReader):
         reader = PrimedWorksheetReader
@@ -1020,7 +1079,6 @@ class TestWorksheetReader:
         assert len(ws.row_dimensions) == 7
         assert ws.row_dimensions[4].parent == ws
 
-
     def test_properties(self, PrimedWorksheetReader):
         reader = PrimedWorksheetReader
         reader.bind_cells()
@@ -1028,10 +1086,15 @@ class TestWorksheetReader:
 
         reader.bind_properties()
 
-        for k in ('page_margins', 'page_setup', 'views', 'sheet_format',
-                  'legacy_drawing', 'protection'):
+        for k in (
+            "page_margins",
+            "page_setup",
+            "views",
+            "sheet_format",
+            "legacy_drawing",
+            "protection",
+        ):
             assert getattr(ws, k) == getattr(reader.parser, k)
-
 
     def test_more_rows_than_cells(self, Workbook, WorksheetReader, datadir):
         ws = Workbook.create_sheet("Sheet")

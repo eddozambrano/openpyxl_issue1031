@@ -1,12 +1,12 @@
 # Copyright (c) 2010-2021 openpyxl
 
 from openpyxl.tests.helper import compare_xml
-
 from openpyxl.xml.functions import tostring
 
 
 def test_related():
     from ..related import Related
+
     rel = Related(id="rId1")
     expected = """
     <drawing xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" r:id="rId1"/>

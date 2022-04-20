@@ -2,17 +2,18 @@
 
 import pytest
 
-from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
+from openpyxl.xml.functions import fromstring, tostring
+
 
 @pytest.fixture
 def ColorChoice():
     from ..colors import ColorChoice
+
     return ColorChoice
 
 
 class TestColorChoice:
-
     def test_ctor(self, ColorChoice):
         color = ColorChoice()
         color.RGB = "000000"
@@ -24,7 +25,6 @@ class TestColorChoice:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, ColorChoice):
         src = """
@@ -38,11 +38,11 @@ class TestColorChoice:
 @pytest.fixture
 def SystemColor():
     from ..colors import SystemColor
+
     return SystemColor
 
 
 class TestSystemColor:
-
     def test_ctor(self, SystemColor):
         colors = SystemColor()
         xml = tostring(colors.to_tree())
@@ -51,7 +51,6 @@ class TestSystemColor:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, SystemColor):
         src = """
@@ -65,11 +64,11 @@ class TestSystemColor:
 @pytest.fixture
 def HSLColor():
     from ..colors import HSLColor
+
     return HSLColor
 
 
 class TestHSLColor:
-
     def test_ctor(self, HSLColor):
         colors = HSLColor(hue=50, sat=10, lum=90)
         xml = tostring(colors.to_tree())
@@ -78,7 +77,6 @@ class TestHSLColor:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, HSLColor):
         src = """
@@ -92,11 +90,11 @@ class TestHSLColor:
 @pytest.fixture
 def RGBPercent():
     from ..colors import RGBPercent
+
     return RGBPercent
 
 
 class TestRGBPercent:
-
     def test_ctor(self, RGBPercent):
         colors = RGBPercent(r=30, g=40, b=20)
         xml = tostring(colors.to_tree())
@@ -105,7 +103,6 @@ class TestRGBPercent:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, RGBPercent):
         src = """
@@ -119,11 +116,11 @@ class TestRGBPercent:
 @pytest.fixture
 def ColorMapping():
     from ..colors import ColorMapping
+
     return ColorMapping
 
 
 class TestColorMapping:
-
     def test_ctor(self, ColorMapping):
         colors = ColorMapping()
         xml = tostring(colors.to_tree())
@@ -136,7 +133,6 @@ class TestColorMapping:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, ColorMapping):
         src = """
@@ -154,11 +150,11 @@ class TestColorMapping:
 @pytest.fixture
 def SchemeColor():
     from ..colors import SchemeColor
+
     return SchemeColor
 
 
 class TestSchemeColor:
-
     def test_ctor(self, SchemeColor):
         sclr = SchemeColor(val="tx1")
         xml = tostring(sclr.to_tree())
@@ -167,7 +163,6 @@ class TestSchemeColor:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, SchemeColor):
         src = """

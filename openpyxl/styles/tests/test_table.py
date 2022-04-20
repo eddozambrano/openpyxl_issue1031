@@ -1,17 +1,18 @@
 # Copyright (c) 2010-2021 openpyxl
 import pytest
 
-from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
+from openpyxl.xml.functions import fromstring, tostring
+
 
 @pytest.fixture
 def TableStyle():
     from ..table import TableStyle
+
     return TableStyle
 
 
 class TestTableStyle:
-
     def test_ctor(self, TableStyle):
         table = TableStyle(name="medium")
         xml = tostring(table.to_tree())
@@ -20,7 +21,6 @@ class TestTableStyle:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, TableStyle):
         src = """
@@ -34,11 +34,11 @@ class TestTableStyle:
 @pytest.fixture
 def TableStyleList():
     from ..table import TableStyleList
+
     return TableStyleList
 
 
 class TestTableStyleList:
-
     def test_ctor(self, TableStyleList):
         table = TableStyleList()
         xml = tostring(table.to_tree())
@@ -47,7 +47,6 @@ class TestTableStyleList:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, TableStyleList):
         src = """
@@ -61,11 +60,11 @@ class TestTableStyleList:
 @pytest.fixture
 def TableStyleElement():
     from ..table import TableStyleElement
+
     return TableStyleElement
 
 
 class TestTableStyleElement:
-
     def test_ctor(self, TableStyleElement):
         table = TableStyleElement(type="wholeTable", dxfId=4)
         xml = tostring(table.to_tree())
@@ -74,7 +73,6 @@ class TestTableStyleElement:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, TableStyleElement):
         src = """

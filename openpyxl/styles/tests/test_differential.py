@@ -2,17 +2,16 @@
 
 import pytest
 
-from openpyxl.xml.functions import fromstring, tostring
-from openpyxl.xml.constants import SHEET_MAIN_NS
-
-from openpyxl.styles import Font, Color, PatternFill, Border, Side
-
+from openpyxl.styles import Border, Color, Font, PatternFill, Side
 from openpyxl.tests.helper import compare_xml
+from openpyxl.xml.constants import SHEET_MAIN_NS
+from openpyxl.xml.functions import fromstring, tostring
 
 
 @pytest.fixture
 def DifferentialStyle():
     from ..differential import DifferentialStyle
+
     return DifferentialStyle
 
 
@@ -22,12 +21,18 @@ def test_parse(DifferentialStyle, datadir):
         src = content.read()
     xml = fromstring(src)
     formats = []
-    for node in xml.findall("{%s}dxfs/{%s}dxf" % (SHEET_MAIN_NS, SHEET_MAIN_NS) ):
+    for node in xml.findall("{%s}dxfs/{%s}dxf" % (SHEET_MAIN_NS, SHEET_MAIN_NS)):
         formats.append(DifferentialStyle.from_tree(node))
     assert len(formats) == 164
     cond = formats[1]
-    assert cond.font == Font(underline="double", b=False, color=Color(auto=1), strikethrough=True, italic=True)
-    assert cond.fill == PatternFill(end_color='FFFFC7CE')
+    assert cond.font == Font(
+        underline="double",
+        b=False,
+        color=Color(auto=1),
+        strikethrough=True,
+        italic=True,
+    )
+    assert cond.fill == PatternFill(end_color="FFFFC7CE")
     assert cond.border == Border(
         left=Side(),
         right=Side(),
@@ -65,15 +70,14 @@ def test_serialise(DifferentialStyle):
     assert diff is None, diff
 
 
-
 @pytest.fixture
 def DifferentialStyleList():
     from ..differential import DifferentialStyleList
+
     return DifferentialStyleList
 
 
 class TestDifferentialStyleList:
-
     def test_ctor(self, DifferentialStyleList, DifferentialStyle):
         cond = DifferentialStyle()
         cond.font = Font(name="Calibri", family=2, sz=11)
@@ -92,7 +96,6 @@ class TestDifferentialStyleList:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, DifferentialStyleList):
         src = """

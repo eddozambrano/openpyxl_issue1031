@@ -1,17 +1,18 @@
 # Copyright (c) 2010-2021 openpyxl
 import pytest
 
-from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
+from openpyxl.xml.functions import fromstring, tostring
+
 
 @pytest.fixture
 def PivotCache():
     from ..workbook import PivotCache
+
     return PivotCache
 
 
 class TestPivotCache:
-
     def test_ctor(self, PivotCache):
         pivot = PivotCache(cacheId=1, id="rId1")
         xml = tostring(pivot.to_tree())
@@ -21,7 +22,6 @@ class TestPivotCache:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, PivotCache):
         src = """

@@ -1,17 +1,18 @@
 # Copyright (c) 2010-2021 openpyxl
 import pytest
 
-from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
+from openpyxl.xml.functions import fromstring, tostring
+
 
 @pytest.fixture
 def BookView():
     from ..views import BookView
+
     return BookView
 
 
 class TestBookView:
-
     def test_ctor(self, BookView):
         view = BookView()
         xml = tostring(view.to_tree())
@@ -20,7 +21,6 @@ class TestBookView:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, BookView):
         src = """
@@ -34,11 +34,11 @@ class TestBookView:
 @pytest.fixture
 def CustomWorkbookView():
     from ..views import CustomWorkbookView
+
     return CustomWorkbookView
 
 
 class TestCustomWorkbookView:
-
     def test_ctor(self, CustomWorkbookView):
         view = CustomWorkbookView(
             name="custom view",
@@ -59,7 +59,6 @@ class TestCustomWorkbookView:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, CustomWorkbookView):
         src = """

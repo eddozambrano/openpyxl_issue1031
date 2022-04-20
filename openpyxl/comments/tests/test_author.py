@@ -1,17 +1,18 @@
 # Copyright (c) 2010-2021 openpyxl
 import pytest
 
-from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
+from openpyxl.xml.functions import fromstring, tostring
+
 
 @pytest.fixture
 def AuthorList():
     from ..author import AuthorList
+
     return AuthorList
 
 
 class TestAuthor:
-
     def test_ctor(self, AuthorList):
         vals = ["Bob", "Alice", "Eve"]
         author = AuthorList(author=vals)
@@ -25,7 +26,6 @@ class TestAuthor:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, AuthorList):
         src = """

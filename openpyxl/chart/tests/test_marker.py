@@ -2,17 +2,18 @@
 
 import pytest
 
-from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
+from openpyxl.xml.functions import fromstring, tostring
+
 
 @pytest.fixture
 def Marker():
     from ..marker import Marker
+
     return Marker
 
 
 class TestMarker:
-
     def test_ctor(self, Marker):
         marker = Marker(symbol=None, size=5)
         xml = tostring(marker.to_tree())
@@ -30,7 +31,6 @@ class TestMarker:
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 
-
     def test_from_xml(self, Marker):
         src = """
         <marker>
@@ -46,11 +46,11 @@ class TestMarker:
 @pytest.fixture
 def DataPoint():
     from ..marker import DataPoint
+
     return DataPoint
 
 
 class TestDataPoint:
-
     def test_ctor(self, DataPoint):
         dp = DataPoint(idx=9)
         xml = tostring(dp.to_tree())
@@ -66,7 +66,6 @@ class TestDataPoint:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, DataPoint):
         src = """

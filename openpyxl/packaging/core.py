@@ -3,21 +3,18 @@
 import datetime
 
 from openpyxl.compat import safe_string
-from openpyxl.descriptors import (
-    String,
-    DateTime,
-    Alias,
-    )
-from openpyxl.descriptors.serialisable import Serialisable
+from openpyxl.descriptors import Alias, DateTime, String
 from openpyxl.descriptors.nested import NestedText
-from openpyxl.xml.functions import (Element, QName, tostring)
+from openpyxl.descriptors.serialisable import Serialisable
 from openpyxl.xml.constants import (
     COREPROPS_NS,
     DCORE_NS,
-    XSI_NS,
     DCTERMS_NS,
-    DCTERMS_PREFIX
+    DCTERMS_PREFIX,
+    XSI_NS,
 )
+from openpyxl.xml.functions import Element, QName, tostring
+
 
 class NestedDateTime(DateTime, NestedText):
 
@@ -29,7 +26,7 @@ class NestedDateTime(DateTime, NestedText):
             tagname = "{%s}%s" % (namespace, tagname)
         el = Element(tagname)
         if value is not None:
-            el.text = value.isoformat(timespec="seconds") + 'Z'
+            el.text = value.isoformat(timespec="seconds") + "Z"
             return el
 
 
@@ -72,29 +69,42 @@ class DocumentProperties(Serialisable):
     created = QualifiedDateTime(allow_none=True, namespace=DCTERMS_NS)
     modified = QualifiedDateTime(allow_none=True, namespace=DCTERMS_NS)
 
-    __elements__ = ("creator", "title", "description", "subject","identifier",
-                  "language", "created", "modified", "lastModifiedBy", "category",
-                  "contentStatus", "version", "revision", "keywords", "lastPrinted",
-                  )
+    __elements__ = (
+        "creator",
+        "title",
+        "description",
+        "subject",
+        "identifier",
+        "language",
+        "created",
+        "modified",
+        "lastModifiedBy",
+        "category",
+        "contentStatus",
+        "version",
+        "revision",
+        "keywords",
+        "lastPrinted",
+    )
 
-
-    def __init__(self,
-                 category=None,
-                 contentStatus=None,
-                 keywords=None,
-                 lastModifiedBy=None,
-                 lastPrinted=None,
-                 revision=None,
-                 version=None,
-                 created=datetime.datetime.utcnow(),
-                 creator="openpyxl",
-                 description=None,
-                 identifier=None,
-                 language=None,
-                 modified=datetime.datetime.utcnow(),
-                 subject=None,
-                 title=None,
-                 ):
+    def __init__(
+        self,
+        category=None,
+        contentStatus=None,
+        keywords=None,
+        lastModifiedBy=None,
+        lastPrinted=None,
+        revision=None,
+        version=None,
+        created=datetime.datetime.utcnow(),
+        creator="openpyxl",
+        description=None,
+        identifier=None,
+        language=None,
+        modified=datetime.datetime.utcnow(),
+        subject=None,
+        title=None,
+    ):
         self.contentStatus = contentStatus
         self.lastPrinted = lastPrinted
         self.revision = revision

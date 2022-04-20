@@ -2,10 +2,10 @@
 
 # test
 import pytest
-from openpyxl.tests.helper import compare_xml
 
 # package
 from openpyxl import Workbook
+from openpyxl.tests.helper import compare_xml
 from openpyxl.xml.functions import tostring
 
 
@@ -13,32 +13,30 @@ from openpyxl.xml.functions import tostring
 def Unicode_Workbook():
     wb = Workbook()
     ws = wb.active
-    ws.title = u"D\xfcsseldorf Sheet"
+    ws.title = "D\xfcsseldorf Sheet"
     return wb
 
 
 @pytest.fixture
 def WorkbookWriter():
     from .._writer import WorkbookWriter
+
     return WorkbookWriter
 
 
 class TestWorkbookWriter:
-
-
     def test_write_auto_filter(self, datadir, WorkbookWriter):
         datadir.chdir()
         wb = Workbook()
         ws = wb.active
-        ws['F42'].value = 'hello'
-        ws.auto_filter.ref = 'A1:F1'
+        ws["F42"].value = "hello"
+        ws.auto_filter.ref = "A1:F1"
 
         writer = WorkbookWriter(wb)
         xml = writer.write()
-        with open('workbook_auto_filter.xml') as expected:
+        with open("workbook_auto_filter.xml") as expected:
             diff = compare_xml(xml, expected.read())
             assert diff is None, diff
-
 
     def test_write_hidden_worksheet(self, WorkbookWriter):
         wb = Workbook()
@@ -66,7 +64,6 @@ class TestWorkbookWriter:
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 
-
     def test_write_workbook(self, datadir, WorkbookWriter):
         datadir.chdir()
         wb = Workbook()
@@ -74,14 +71,13 @@ class TestWorkbookWriter:
         writer = WorkbookWriter(wb)
         xml = writer.write()
         assert len(writer.rels) == 1
-        with open('workbook.xml') as expected:
+        with open("workbook.xml") as expected:
             diff = compare_xml(xml, expected.read())
             assert diff is None, diff
 
-
     def test_write_workbook_code_name(self, WorkbookWriter):
         wb = Workbook()
-        wb.code_name = u'MyWB'
+        wb.code_name = "MyWB"
 
         writer = WorkbookWriter(wb)
         xml = writer.write()
@@ -102,11 +98,10 @@ class TestWorkbookWriter:
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 
-
     def test_print_area(self, Unicode_Workbook, WorkbookWriter):
         wb = Unicode_Workbook
         ws = wb.active
-        ws.print_area = 'A1:D4'
+        ws.print_area = "A1:D4"
 
         writer = WorkbookWriter(wb)
         xml = writer.write()
@@ -131,11 +126,10 @@ class TestWorkbookWriter:
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 
-
     def test_print_titles(self, Unicode_Workbook, WorkbookWriter):
         wb = Unicode_Workbook
         ws = wb.active
-        ws.print_title_rows = '1:5'
+        ws.print_title_rows = "1:5"
 
         writer = WorkbookWriter(wb)
         xml = writer.write()
@@ -159,7 +153,6 @@ class TestWorkbookWriter:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_print_autofilter(self, Unicode_Workbook, WorkbookWriter):
         wb = Unicode_Workbook
@@ -190,21 +183,19 @@ class TestWorkbookWriter:
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 
-
     def test_write_workbook_protection(self, datadir, WorkbookWriter):
         from ...workbook.protection import WorkbookProtection
 
         datadir.chdir()
         wb = Workbook()
         wb.security = WorkbookProtection(lockStructure=True)
-        wb.security.set_workbook_password('ABCD', already_hashed=True)
+        wb.security.set_workbook_password("ABCD", already_hashed=True)
 
         writer = WorkbookWriter(wb)
         xml = writer.write()
-        with open('workbook_protection.xml') as expected:
+        with open("workbook_protection.xml") as expected:
             diff = compare_xml(xml, expected.read())
             assert diff is None, diff
-
 
 
 def test_write_hidden_single_worksheet():
@@ -212,16 +203,21 @@ def test_write_hidden_single_worksheet():
     ws = wb.active
     ws.sheet_state = "hidden"
     from .._writer import get_active_sheet
+
     with pytest.raises(IndexError):
         get_active_sheet(wb)
 
 
-@pytest.mark.parametrize("vba, filename",
-                         [
-                             (None, 'workbook.xml.rels',),
-                             (True, 'workbook_vba.xml.rels'),
-                         ]
-                         )
+@pytest.mark.parametrize(
+    "vba, filename",
+    [
+        (
+            None,
+            "workbook.xml.rels",
+        ),
+        (True, "workbook_vba.xml.rels"),
+    ],
+)
 def test_write_workbook_rels(datadir, vba, filename, WorkbookWriter):
     datadir.chdir()
     wb = Workbook()

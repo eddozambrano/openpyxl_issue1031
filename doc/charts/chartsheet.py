@@ -1,5 +1,4 @@
 from openpyxl import Workbook
-
 from openpyxl.chart import PieChart, Reference, Series
 
 wb = Workbook()

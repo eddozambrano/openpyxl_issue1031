@@ -2,19 +2,18 @@
 
 import pytest
 
-from openpyxl.xml.functions import tostring, fromstring
 from openpyxl.tests.helper import compare_xml
+from openpyxl.xml.functions import fromstring, tostring
 
 
 @pytest.fixture
 def NumRef():
     from ..data_source import NumRef
+
     return NumRef
 
 
 class TestNumRef:
-
-
     def test_from_xml(self, NumRef):
         src = """
         <numRef>
@@ -24,7 +23,6 @@ class TestNumRef:
         node = fromstring(src)
         num = NumRef.from_tree(node)
         assert num.ref == "Blatt1!$A$1:$A$12"
-
 
     def test_to_xml(self, NumRef):
         num = NumRef(f="Blatt1!$A$1:$A$12")
@@ -36,7 +34,6 @@ class TestNumRef:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_tree_degree_sign(self, NumRef):
 
@@ -57,17 +54,17 @@ class TestNumRef:
         """
         node = fromstring(src)
         numRef = NumRef.from_tree(node)
-        assert numRef.numCache.formatCode == u"0\xb0"
+        assert numRef.numCache.formatCode == "0\xb0"
 
 
 @pytest.fixture
 def StrRef():
     from ..data_source import StrRef
+
     return StrRef
 
 
 class TestStrRef:
-
     def test_ctor(self, StrRef):
         data_source = StrRef(f="Sheet1!A1")
         xml = tostring(data_source.to_tree())
@@ -78,7 +75,6 @@ class TestStrRef:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, StrRef):
         src = """
@@ -94,11 +90,11 @@ class TestStrRef:
 @pytest.fixture
 def StrVal():
     from ..data_source import StrVal
+
     return StrVal
 
 
 class TestStrVal:
-
     def test_ctor(self, StrVal):
         val = StrVal(v="something")
         xml = tostring(val.to_tree())
@@ -109,7 +105,6 @@ class TestStrVal:
           """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, StrVal):
         src = """
@@ -125,11 +120,11 @@ class TestStrVal:
 @pytest.fixture
 def StrData():
     from ..data_source import StrData
+
     return StrData
 
 
 class TestStrData:
-
     def test_ctor(self, StrData):
         data_source = StrData(ptCount=1)
         xml = tostring(data_source.to_tree())
@@ -140,7 +135,6 @@ class TestStrData:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, StrData):
         src = """
@@ -156,11 +150,11 @@ class TestStrData:
 @pytest.fixture
 def Level():
     from ..data_source import Level
+
     return Level
 
 
 class TestLevel:
-
     def test_ctor(self, Level):
         level = Level()
         xml = tostring(level.to_tree())
@@ -169,7 +163,6 @@ class TestLevel:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, Level):
         src = """
@@ -183,11 +176,11 @@ class TestLevel:
 @pytest.fixture
 def MultiLevelStrData():
     from ..data_source import MultiLevelStrData
+
     return MultiLevelStrData
 
 
 class TestMultiLevelStrData:
-
     def test_ctor(self, MultiLevelStrData):
         multidata = MultiLevelStrData()
         xml = tostring(multidata.to_tree())
@@ -196,7 +189,6 @@ class TestMultiLevelStrData:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, MultiLevelStrData):
         src = """
@@ -210,11 +202,11 @@ class TestMultiLevelStrData:
 @pytest.fixture
 def MultiLevelStrRef():
     from ..data_source import MultiLevelStrRef
+
     return MultiLevelStrRef
 
 
 class TestMultiLevelStrRef:
-
     def test_ctor(self, MultiLevelStrRef):
         multiref = MultiLevelStrRef(f="Sheet1!$A$1:$B$10")
         xml = tostring(multiref.to_tree())
@@ -225,7 +217,6 @@ class TestMultiLevelStrRef:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, MultiLevelStrRef):
         src = """
@@ -241,11 +232,11 @@ class TestMultiLevelStrRef:
 @pytest.fixture
 def AxDataSource():
     from ..data_source import AxDataSource
+
     return AxDataSource
 
 
 class TestAxDataSource:
-
     def test_ctor(self, AxDataSource, StrRef):
         dummy = StrRef(f="")
         ax = AxDataSource(strRef=dummy)
@@ -260,11 +251,9 @@ class TestAxDataSource:
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 
-
     def test_no_source(self, AxDataSource):
         with pytest.raises(TypeError):
             ax = AxDataSource()
-
 
     def test_from_xml(self, AxDataSource, StrRef):
         src = """

@@ -2,17 +2,18 @@
 
 import pytest
 
-from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
+from openpyxl.xml.functions import fromstring, tostring
+
 
 @pytest.fixture
 def LineProperties():
     from ..line import LineProperties
+
     return LineProperties
 
 
 class TestLineProperties:
-
     def test_ctor(self, LineProperties):
         line = LineProperties(w=10, miter=4)
         xml = tostring(line.to_tree())
@@ -24,7 +25,6 @@ class TestLineProperties:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_color(self, LineProperties):
         line = LineProperties(w=10)
@@ -41,7 +41,6 @@ class TestLineProperties:
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 
-
     def test_from_xml(self, LineProperties):
         src = """
         <ln w="38100" cmpd="sng">
@@ -57,11 +56,11 @@ class TestLineProperties:
 @pytest.fixture
 def LineEndProperties():
     from ..line import LineEndProperties
+
     return LineEndProperties
 
 
 class TestLineEndProperties:
-
     def test_ctor(self, LineEndProperties):
         line = LineEndProperties()
         xml = tostring(line.to_tree())
@@ -70,7 +69,6 @@ class TestLineEndProperties:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, LineEndProperties):
         src = """
@@ -84,11 +82,11 @@ class TestLineEndProperties:
 @pytest.fixture
 def DashStop():
     from ..line import DashStop
+
     return DashStop
 
 
 class TestDashStop:
-
     def test_ctor(self, DashStop):
         line = DashStop()
         xml = tostring(line.to_tree())
@@ -97,7 +95,6 @@ class TestDashStop:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, DashStop):
         src = """

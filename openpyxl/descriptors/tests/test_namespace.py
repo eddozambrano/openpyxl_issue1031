@@ -11,7 +11,6 @@ def test_no_namespace():
 
 
 def test_object_namespace():
-
     class Object:
 
         namespace = "main"

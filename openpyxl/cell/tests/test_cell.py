@@ -2,27 +2,22 @@
 
 
 # Python stdlib imports
-from datetime import (
-    time,
-    datetime,
-    date,
-    timedelta,
-)
+from datetime import date, datetime, time, timedelta
 
 # 3rd party imports
 import pytest
 
-# package imports
-
-from openpyxl.comments import Comment
 from openpyxl.cell.cell import ERROR_CODES, get_time_format
+from openpyxl.comments import Comment
+
+# package imports
 
 
 @pytest.fixture
 def DummyWorksheet():
-    from openpyxl.utils.indexed_list import IndexedList
-    from openpyxl.utils.datetime  import CALENDAR_WINDOWS_1900
     from openpyxl.cell import Cell
+    from openpyxl.utils.datetime import CALENDAR_WINDOWS_1900
+    from openpyxl.utils.indexed_list import IndexedList
 
     class Wb(object):
         epoch = CALENDAR_WINDOWS_1900
@@ -34,10 +29,9 @@ def DummyWorksheet():
         _number_formats = IndexedList()
         _cell_styles = IndexedList()
 
-
     class Ws(object):
 
-        encoding = 'utf-8'
+        encoding = "utf-8"
         parent = Wb()
         title = "Dummy Worksheet"
         _comment_count = 0
@@ -51,6 +45,7 @@ def DummyWorksheet():
 @pytest.fixture
 def Cell():
     from ..cell import Cell
+
     return Cell
 
 
@@ -63,7 +58,7 @@ def dummy_cell(DummyWorksheet, Cell):
 
 def test_ctor(dummy_cell):
     cell = dummy_cell
-    assert cell.data_type == 'n'
+    assert cell.data_type == "n"
     assert cell.column == 1
     assert cell.row == 1
     assert cell.coordinate == "A1"
@@ -72,32 +67,32 @@ def test_ctor(dummy_cell):
     assert cell.comment is None
 
 
-@pytest.mark.parametrize("datatype", ['n', 'd', 's', 'b', 'f', 'e'])
+@pytest.mark.parametrize("datatype", ["n", "d", "s", "b", "f", "e"])
 def test_null(dummy_cell, datatype):
     cell = dummy_cell
     cell.data_type = datatype
     assert cell.data_type == datatype
     cell.value = None
-    assert cell.data_type == 'n'
+    assert cell.data_type == "n"
 
 
-@pytest.mark.parametrize("value", ['hello', ".", '0800'])
+@pytest.mark.parametrize("value", ["hello", ".", "0800"])
 def test_string(dummy_cell, value):
     cell = dummy_cell
-    cell.value = 'hello'
-    assert cell.data_type == 's'
+    cell.value = "hello"
+    assert cell.data_type == "s"
 
 
-@pytest.mark.parametrize("value", ['=42', '=if(A1<4;-1;1)'])
+@pytest.mark.parametrize("value", ["=42", "=if(A1<4;-1;1)"])
 def test_formula(dummy_cell, value):
     cell = dummy_cell
     cell.value = value
-    assert cell.data_type == 'f'
+    assert cell.data_type == "f"
 
 
 def test_not_formula(dummy_cell):
     dummy_cell.value = "="
-    assert dummy_cell.data_type == 's'
+    assert dummy_cell.data_type == "s"
     assert dummy_cell.value == "="
 
 
@@ -105,36 +100,31 @@ def test_not_formula(dummy_cell):
 def test_boolean(dummy_cell, value):
     cell = dummy_cell
     cell.value = value
-    assert cell.data_type == 'b'
+    assert cell.data_type == "b"
 
 
 @pytest.mark.parametrize("error_string", ERROR_CODES)
 def test_error_codes(dummy_cell, error_string):
     cell = dummy_cell
     cell.value = error_string
-    assert cell.data_type == 'e'
+    assert cell.data_type == "e"
 
 
-@pytest.mark.parametrize("value, number_format",
-                         [
-                             (
-                                 datetime(2010, 7, 13, 6, 37, 41),
-                                 "yyyy-mm-dd h:mm:ss"
-                             ),
-                             (
-                                 date(2010, 7, 13),
-                                 "yyyy-mm-dd"
-                             ),
-                             (
-                                 time(1, 3),
-                                 "h:mm:ss",
-                             )
-                         ]
-                         )
+@pytest.mark.parametrize(
+    "value, number_format",
+    [
+        (datetime(2010, 7, 13, 6, 37, 41), "yyyy-mm-dd h:mm:ss"),
+        (date(2010, 7, 13), "yyyy-mm-dd"),
+        (
+            time(1, 3),
+            "h:mm:ss",
+        ),
+    ],
+)
 def test_insert_date(dummy_cell, value, number_format):
     cell = dummy_cell
     cell.value = value
-    assert cell.data_type == 'd'
+    assert cell.data_type == "d"
     assert cell.is_date
     assert cell.number_format == number_format
 
@@ -142,9 +132,11 @@ def test_insert_date(dummy_cell, value, number_format):
 @pytest.mark.pandas_required
 def test_timstamp(dummy_cell):
     from pandas import Timestamp
+
     cell = dummy_cell
     cell.value = Timestamp("2018-09-05")
     assert cell.number_format == "yyyy-mm-dd h:mm:ss"
+
 
 def test_time_format_datetime_subclass():
     class TestDatetime(datetime):
@@ -152,6 +144,7 @@ def test_time_format_datetime_subclass():
 
     number_format = get_time_format(TestDatetime)
     assert number_format == "yyyy-mm-dd h:mm:ss"
+
 
 def test_time_format_date_subclass():
     class TestDate(date):
@@ -173,13 +166,17 @@ def test_not_overwrite_time_format(dummy_cell):
     assert cell.number_format == "mmm-yy"
 
 
-@pytest.mark.parametrize("value, is_date",
-                         [
-                             (None, True,),
-                             ("testme", False),
-                             (True, False),
-                         ]
-                         )
+@pytest.mark.parametrize(
+    "value, is_date",
+    [
+        (
+            None,
+            True,
+        ),
+        ("testme", False),
+        (True, False),
+    ],
+)
 def test_cell_formatted_as_date(dummy_cell, value, is_date):
     cell = dummy_cell
     cell.value = datetime.today()
@@ -189,8 +186,10 @@ def test_cell_formatted_as_date(dummy_cell, value, is_date):
 
 
 def test_illegal_characters(dummy_cell):
-    from openpyxl.utils.exceptions import IllegalCharacterError
     from itertools import chain
+
+    from openpyxl.utils.exceptions import IllegalCharacterError
+
     cell = dummy_cell
 
     # The bytes 0x00 through 0x1F inclusive must be manually escaped in values.
@@ -210,13 +209,12 @@ def test_illegal_characters(dummy_cell):
     cell.value = " Leading and trailing spaces are legal "
 
 
-
 @pytest.mark.xfail
 def test_timedelta(dummy_cell):
     cell = dummy_cell
     cell.value = timedelta(days=1, hours=3)
     assert cell.value == 1.125
-    assert cell.data_type == 'n'
+    assert cell.data_type == "n"
     assert cell.is_date is False
     assert cell.number_format == "[hh]:mm:ss"
 
@@ -227,9 +225,7 @@ def test_repr(dummy_cell):
 
 
 def test_repr_object(dummy_cell):
-
     class Dummy:
-
         def __str__(self):
             return "something"
 
@@ -249,7 +245,7 @@ def test_comment_assignment(dummy_cell):
 
 def test_only_one_cell_per_comment(dummy_cell):
     ws = dummy_cell.parent
-    comm = Comment('text', 'author')
+    comm = Comment("text", "author")
     dummy_cell.comment = comm
 
     c2 = ws.cell(column=1, row=2)
@@ -258,7 +254,7 @@ def test_only_one_cell_per_comment(dummy_cell):
 
 
 def test_remove_comment(dummy_cell):
-    comm = Comment('text', 'author')
+    comm = Comment("text", "author")
     dummy_cell.comment = comm
     dummy_cell.comment = None
     assert dummy_cell.comment is None
@@ -266,7 +262,7 @@ def test_remove_comment(dummy_cell):
 
 def test_cell_offset(dummy_cell):
     cell = dummy_cell
-    assert cell.offset(2, 1).coordinate == 'B3'
+    assert cell.offset(2, 1).coordinate == "B3"
 
 
 class TestEncoding:
@@ -277,14 +273,14 @@ class TestEncoding:
     except NameError:
         # Python 3
         pound = chr(163)
-    test_string = ('Compound Value (' + pound + ')').encode('latin1')
+    test_string = ("Compound Value (" + pound + ")").encode("latin1")
 
     def test_bad_encoding(self):
         from openpyxl import Workbook
 
         wb = Workbook()
         ws = wb.active
-        cell = ws['A1']
+        cell = ws["A1"]
         with pytest.raises(UnicodeDecodeError):
             cell.check_string(self.test_string)
         with pytest.raises(UnicodeDecodeError):
@@ -294,14 +290,15 @@ class TestEncoding:
         from openpyxl import Workbook
 
         wb = Workbook()
-        wb.encoding = 'latin1'
+        wb.encoding = "latin1"
         ws = wb.active
-        cell = ws['A1']
+        cell = ws["A1"]
         cell.value = self.test_string
 
 
 def test_font(DummyWorksheet, Cell):
     from openpyxl.styles import Font
+
     font = Font(bold=True)
     ws = DummyWorksheet
     ws.parent._fonts.add(font)
@@ -312,21 +309,23 @@ def test_font(DummyWorksheet, Cell):
 
 def test_fill(DummyWorksheet, Cell):
     from openpyxl.styles import PatternFill
+
     fill = PatternFill(patternType="solid", fgColor="FF0000")
     ws = DummyWorksheet
     ws.parent._fills.add(fill)
 
-    cell = Cell(ws, column='A', row=1)
+    cell = Cell(ws, column="A", row=1)
     assert cell.fill == fill
 
 
 def test_border(DummyWorksheet, Cell):
     from openpyxl.styles import Border
+
     border = Border()
     ws = DummyWorksheet
     ws.parent._borders.add(border)
 
-    cell = Cell(ws, column='A', row=1)
+    cell = Cell(ws, column="A", row=1)
     assert cell.border == border
 
 
@@ -341,6 +340,7 @@ def test_number_format(DummyWorksheet, Cell):
 
 def test_alignment(DummyWorksheet, Cell):
     from openpyxl.styles import Alignment
+
     align = Alignment(wrapText=True)
     ws = DummyWorksheet
     ws.parent._alignments.add(align)
@@ -351,6 +351,7 @@ def test_alignment(DummyWorksheet, Cell):
 
 def test_protection(DummyWorksheet, Cell):
     from openpyxl.styles import Protection
+
     prot = Protection(locked=False)
     ws = DummyWorksheet
     ws.parent._protections.add(prot)
@@ -388,25 +389,22 @@ def test_remove_hyperlink(dummy_cell):
 @pytest.fixture
 def MergedCell(DummyWorksheet):
     from ..cell import MergedCell
+
     return MergedCell(DummyWorksheet)
 
 
 class TestMergedCell:
-
     def test_value(self, MergedCell):
         cell = MergedCell
         assert cell._value is None
 
-
     def test_data_type(self, MergedCell):
         cell = MergedCell
-        assert cell.data_type == 'n'
-
+        assert cell.data_type == "n"
 
     def test_comment(self, MergedCell):
         cell = MergedCell
         assert cell.comment is None
-
 
     def test_coordinate(self, MergedCell):
         cell = MergedCell
@@ -414,13 +412,11 @@ class TestMergedCell:
         cell.column = 1
         assert cell.coordinate == "A1"
 
-
     def test_repr(self, MergedCell):
         cell = MergedCell
         cell.row = 1
         cell.column = 1
         assert repr(cell) == "<MergedCell 'Dummy Worksheet'.A1>"
-
 
     def test_hyperlink(self, MergedCell):
         cell = MergedCell
@@ -430,6 +426,7 @@ class TestMergedCell:
 @pytest.mark.numpy_required
 def test_write_numpy_to_cell(dummy_cell):
     import numpy
+
     data = numpy.array([1.0])
     cell = dummy_cell
     cell.value = data[0]

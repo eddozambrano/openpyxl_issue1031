@@ -2,24 +2,18 @@
 
 from copy import copy
 from keyword import kwlist
+
 KEYWORDS = frozenset(kwlist)
 
-from . import Descriptor
-from . import _Serialiasable
-from .sequence import (
-    Sequence,
-    NestedSequence,
-    MultiSequencePart,
-)
-from .namespace import namespaced
-
 from openpyxl.compat import safe_string
-from openpyxl.xml.functions import (
-    Element,
-    localname,
-)
+from openpyxl.xml.functions import Element, localname
+
+from . import Descriptor, _Serialiasable
+from .namespace import namespaced
+from .sequence import MultiSequencePart, NestedSequence, Sequence
 
 seq_types = (list, tuple)
+
 
 class Serialisable(_Serialiasable):
     """
@@ -39,7 +33,7 @@ class Serialisable(_Serialiasable):
 
     @property
     def tagname(self):
-        raise(NotImplementedError)
+        raise (NotImplementedError)
 
     namespace = None
 
@@ -57,7 +51,7 @@ class Serialisable(_Serialiasable):
 
         # strip attributes with unknown namespaces
         for key in list(attrib):
-            if key.startswith('{'):
+            if key.startswith("{"):
                 del attrib[key]
             elif key in KEYWORDS:
                 attrib["_" + key] = attrib[key]
@@ -78,15 +72,15 @@ class Serialisable(_Serialiasable):
             if desc is None or isinstance(desc, property):
                 continue
 
-            if hasattr(desc, 'from_tree'):
-                #descriptor manages conversion
+            if hasattr(desc, "from_tree"):
+                # descriptor manages conversion
                 obj = desc.from_tree(el)
             else:
                 if hasattr(desc.expected_type, "from_tree"):
-                    #complex type
+                    # complex type
                     obj = desc.expected_type.from_tree(el)
                 else:
-                    #primitive
+                    # primitive
                     obj = el.text
 
             if isinstance(desc, NestedSequence):
@@ -101,7 +95,6 @@ class Serialisable(_Serialiasable):
                 attrib[tag] = obj
 
         return cls(**attrib)
-
 
     def to_tree(self, tagname=None, idx=None, namespace=None):
 
@@ -128,7 +121,7 @@ class Serialisable(_Serialiasable):
         for child_tag in self.__elements__:
             desc = getattr(self.__class__, child_tag, None)
             obj = getattr(self, child_tag)
-            if hasattr(desc, "namespace") and hasattr(obj, 'namespace'):
+            if hasattr(desc, "namespace") and hasattr(obj, "namespace"):
                 obj.namespace = desc.namespace
 
             if isinstance(obj, seq_types):
@@ -140,8 +133,8 @@ class Serialisable(_Serialiasable):
                 elif isinstance(desc, Sequence):
                     # sequence
                     desc.idx_base = self.idx_base
-                    nodes = (desc.to_tree(child_tag, obj, namespace))
-                else: # property
+                    nodes = desc.to_tree(child_tag, obj, namespace)
+                else:  # property
                     nodes = (v.to_tree(child_tag, namespace) for v in obj)
                 for node in nodes:
                     el.append(node)
@@ -155,11 +148,10 @@ class Serialisable(_Serialiasable):
                         node = obj.to_tree(child_tag)
                     except AttributeError as e:
                         node = None
-                        print(f'Warning: {e}. Node is ignored.')
+                        print(f"Warning: {e}. Node is ignored.")
                 if node is not None:
                     el.append(node)
         return el
-
 
     def __iter__(self):
         for attr in self.__attrs__:
@@ -173,7 +165,6 @@ class Serialisable(_Serialiasable):
             if attr != "attr_text" and value is not None:
                 yield attr, safe_string(value)
 
-
     def __eq__(self, other):
         if not self.__class__ == other.__class__:
             return False
@@ -184,26 +175,22 @@ class Serialisable(_Serialiasable):
                 return False
         return True
 
-
     def __ne__(self, other):
         return not self == other
 
-
     def __repr__(self):
-        s = u"<{0}.{1} object>\nParameters:".format(
-            self.__module__,
-            self.__class__.__name__
+        s = "<{0}.{1} object>\nParameters:".format(
+            self.__module__, self.__class__.__name__
         )
         args = []
         for k in self.__attrs__ + self.__elements__:
             v = getattr(self, k)
             if isinstance(v, Descriptor):
                 v = None
-            args.append(u"{0}={1}".format(k, repr(v)))
-        args = u", ".join(args)
+            args.append("{0}={1}".format(k, repr(v)))
+        args = ", ".join(args)
 
-        return u"\n".join([s, args])
-
+        return "\n".join([s, args])
 
     def __hash__(self):
         fields = []
@@ -214,7 +201,6 @@ class Serialisable(_Serialiasable):
             fields.append(val)
 
         return hash(tuple(fields))
-
 
     def __add__(self, other):
         if type(self) != type(other):
@@ -230,7 +216,6 @@ class Serialisable(_Serialiasable):
             else:
                 vals[el] = a or b
         return self.__class__(**vals)
-
 
     def __copy__(self):
         # serialise to xml and back to avoid shallow copies

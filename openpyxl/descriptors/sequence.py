@@ -1,10 +1,10 @@
 # copyright openpyxl 2010-2015
 
 from openpyxl.compat import safe_string
-from openpyxl.xml.functions import Element
 from openpyxl.utils.indexed_list import IndexedList
+from openpyxl.xml.functions import Element
 
-from .base import Descriptor, Alias, _convert
+from .base import Alias, Descriptor, _convert
 from .namespace import namespaced
 
 
@@ -19,7 +19,6 @@ class Sequence(Descriptor):
     idx_base = 0
     unique = False
 
-
     def __set__(self, instance, seq):
         if not isinstance(seq, self.seq_types):
             raise TypeError("Value must be a sequence")
@@ -28,7 +27,6 @@ class Sequence(Descriptor):
             seq = IndexedList(seq)
 
         super(Sequence, self).__set__(instance, seq)
-
 
     def to_tree(self, tagname, obj, namespace=None):
         """
@@ -52,12 +50,10 @@ class ValueSequence(Sequence):
 
     attribute = "val"
 
-
     def to_tree(self, tagname, obj, namespace=None):
         tagname = namespaced(self, tagname, namespace)
         for v in obj:
-            yield Element(tagname, {self.attribute:safe_string(v)})
-
+            yield Element(tagname, {self.attribute: safe_string(v)})
 
     def from_tree(self, node):
 
@@ -75,11 +71,10 @@ class NestedSequence(Sequence):
         tagname = namespaced(self, tagname, namespace)
         container = Element(tagname)
         if self.count:
-            container.set('count', str(len(obj)))
+            container.set("count", str(len(obj)))
         for v in obj:
             container.append(v.to_tree())
         return container
-
 
     def from_tree(self, node):
         return [self.expected_type.from_tree(el) for el in node]
@@ -95,7 +90,6 @@ class MultiSequence(Sequence):
             raise ValueError("Value must be a sequence")
         seq = list(seq)
         Descriptor.__set__(self, instance, seq)
-
 
     def to_tree(self, tagname, obj, namespace=None):
         """
@@ -117,11 +111,9 @@ class MultiSequencePart(Alias):
         self.expected_type = expected_type
         self.store = store
 
-
     def __set__(self, instance, value):
         value = _convert(self.expected_type, value)
         instance.__dict__[self.store].append(value)
-
 
     def __get__(self, instance, cls):
         return self

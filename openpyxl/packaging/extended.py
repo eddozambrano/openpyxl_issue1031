@@ -1,14 +1,9 @@
 # Copyright (c) 2010-2021 openpyxl
 
 
+from openpyxl.descriptors import Typed
+from openpyxl.descriptors.nested import NestedText
 from openpyxl.descriptors.serialisable import Serialisable
-from openpyxl.descriptors import (
-    Typed,
-)
-from openpyxl.descriptors.nested import (
-    NestedText,
-)
-
 from openpyxl.xml.constants import XPROPS_NS
 
 
@@ -48,7 +43,7 @@ class ExtendedProperties(Serialisable):
     Manager = NestedText(expected_type=str, allow_none=True)
     Company = NestedText(expected_type=str, allow_none=True)
     Pages = NestedText(expected_type=int, allow_none=True)
-    Words = NestedText(expected_type=int,allow_none=True)
+    Words = NestedText(expected_type=int, allow_none=True)
     Characters = NestedText(expected_type=int, allow_none=True)
     PresentationFormat = NestedText(expected_type=str, allow_none=True)
     Lines = NestedText(expected_type=int, allow_none=True)
@@ -72,38 +67,46 @@ class ExtendedProperties(Serialisable):
     AppVersion = NestedText(expected_type=str, allow_none=True)
     DocSecurity = NestedText(expected_type=int, allow_none=True)
 
-    __elements__ = ('Application', 'AppVersion', 'DocSecurity', 'ScaleCrop',
-                    'LinksUpToDate', 'SharedDoc', 'HyperlinksChanged')
+    __elements__ = (
+        "Application",
+        "AppVersion",
+        "DocSecurity",
+        "ScaleCrop",
+        "LinksUpToDate",
+        "SharedDoc",
+        "HyperlinksChanged",
+    )
 
-    def __init__(self,
-                 Template=None,
-                 Manager=None,
-                 Company=None,
-                 Pages=None,
-                 Words=None,
-                 Characters=None,
-                 PresentationFormat=None,
-                 Lines=None,
-                 Paragraphs=None,
-                 Slides=None,
-                 Notes=None,
-                 TotalTime=None,
-                 HiddenSlides=None,
-                 MMClips=None,
-                 ScaleCrop=None,
-                 HeadingPairs=None,
-                 TitlesOfParts=None,
-                 LinksUpToDate=None,
-                 CharactersWithSpaces=None,
-                 SharedDoc=None,
-                 HyperlinkBase=None,
-                 HLinks=None,
-                 HyperlinksChanged=None,
-                 DigSig=None,
-                 Application="Microsoft Excel",
-                 AppVersion=None,
-                 DocSecurity=None,
-                ):
+    def __init__(
+        self,
+        Template=None,
+        Manager=None,
+        Company=None,
+        Pages=None,
+        Words=None,
+        Characters=None,
+        PresentationFormat=None,
+        Lines=None,
+        Paragraphs=None,
+        Slides=None,
+        Notes=None,
+        TotalTime=None,
+        HiddenSlides=None,
+        MMClips=None,
+        ScaleCrop=None,
+        HeadingPairs=None,
+        TitlesOfParts=None,
+        LinksUpToDate=None,
+        CharactersWithSpaces=None,
+        SharedDoc=None,
+        HyperlinkBase=None,
+        HLinks=None,
+        HyperlinksChanged=None,
+        DigSig=None,
+        Application="Microsoft Excel",
+        AppVersion=None,
+        DocSecurity=None,
+    ):
         self.Template = Template
         self.Manager = Manager
         self.Company = Company
@@ -133,7 +136,6 @@ class ExtendedProperties(Serialisable):
             AppVersion = get_version()
         self.AppVersion = AppVersion
         self.DocSecurity = DocSecurity
-
 
     def to_tree(self):
         tree = super(ExtendedProperties, self).to_tree()

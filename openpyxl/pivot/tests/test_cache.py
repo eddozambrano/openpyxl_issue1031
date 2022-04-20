@@ -1,12 +1,12 @@
 # Copyright (c) 2010-2021 openpyxl
-import pytest
-
 from io import BytesIO
 from zipfile import ZipFile
 
+import pytest
+
 from openpyxl.packaging.manifest import Manifest
-from openpyxl.xml.functions import fromstring, tostring
 from openpyxl.tests.helper import compare_xml
+from openpyxl.xml.functions import fromstring, tostring
 
 from ..record import Text
 
@@ -14,11 +14,11 @@ from ..record import Text
 @pytest.fixture
 def CacheField():
     from ..cache import CacheField
+
     return CacheField
 
 
 class TestCacheField:
-
     def test_ctor(self, CacheField):
         field = CacheField(name="ID")
         xml = tostring(field.to_tree())
@@ -27,7 +27,6 @@ class TestCacheField:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, CacheField):
         src = """
@@ -41,11 +40,11 @@ class TestCacheField:
 @pytest.fixture
 def SharedItems():
     from ..cache import SharedItems
+
     return SharedItems
 
 
 class TestSharedItems:
-
     def test_ctor(self, SharedItems):
         s = [Text(v="Stanford"), Text(v="Cal"), Text(v="UCLA")]
         items = SharedItems(_fields=s)
@@ -59,7 +58,6 @@ class TestSharedItems:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, SharedItems):
         src = """
@@ -78,11 +76,11 @@ class TestSharedItems:
 @pytest.fixture
 def WorksheetSource():
     from ..cache import WorksheetSource
+
     return WorksheetSource
 
 
 class TestWorksheetSource:
-
     def test_ctor(self, WorksheetSource):
         ws = WorksheetSource(name="mydata")
         xml = tostring(ws.to_tree())
@@ -91,7 +89,6 @@ class TestWorksheetSource:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, WorksheetSource):
         src = """
@@ -105,11 +102,11 @@ class TestWorksheetSource:
 @pytest.fixture
 def CacheSource():
     from ..cache import CacheSource
+
     return CacheSource
 
 
 class TestCacheSource:
-
     def test_ctor(self, CacheSource, WorksheetSource):
         ws = WorksheetSource(name="mydata")
         source = CacheSource(type="worksheet", worksheetSource=ws)
@@ -121,7 +118,6 @@ class TestCacheSource:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, CacheSource, WorksheetSource):
         src = """
@@ -138,6 +134,7 @@ class TestCacheSource:
 @pytest.fixture
 def CacheDefinition():
     from ..cache import CacheDefinition
+
     return CacheDefinition
 
 
@@ -151,7 +148,6 @@ def DummyCache(CacheDefinition, WorksheetSource, CacheSource, CacheField):
 
 
 class TestPivotCacheDefinition:
-
     def test_read(self, CacheDefinition, datadir):
         datadir.chdir()
         with open("pivotCacheDefinition.xml", "rb") as src:
@@ -160,7 +156,6 @@ class TestPivotCacheDefinition:
         cache = CacheDefinition.from_tree(xml)
         assert cache.recordCount == 17
         assert len(cache.cacheFields) == 6
-
 
     def test_to_tree(self, DummyCache):
         cache = DummyCache
@@ -181,10 +176,8 @@ class TestPivotCacheDefinition:
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 
-
     def test_path(self, DummyCache):
         assert DummyCache.path == "/xl/pivotCache/pivotCacheDefinition1.xml"
-
 
     def test_write(self, DummyCache):
         out = BytesIO()
@@ -198,15 +191,14 @@ class TestPivotCacheDefinition:
         assert manifest.find(DummyCache.mime_type)
 
 
-
 @pytest.fixture
 def CacheHierarchy():
     from ..cache import CacheHierarchy
+
     return CacheHierarchy
 
 
 class TestCacheHierarchy:
-
     def test_ctor(self, CacheHierarchy):
         ch = CacheHierarchy(
             uniqueName="[Interval].[Date]",
@@ -232,7 +224,6 @@ class TestCacheHierarchy:
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 
-
     def test_from_xml(self, CacheHierarchy):
         src = """
         <cacheHierarchy uniqueName="[Interval].[Date]" caption="Date" attribute="1"
@@ -254,17 +245,17 @@ class TestCacheHierarchy:
             count=0,
             unbalanced=False,
             displayFolder="",
-            )
+        )
 
 
 @pytest.fixture
 def MeasureDimensionMap():
     from ..cache import MeasureDimensionMap
+
     return MeasureDimensionMap
 
 
 class TestMeasureDimensionMap:
-
     def test_ctor(self, MeasureDimensionMap):
         mdm = MeasureDimensionMap()
         xml = tostring(mdm.to_tree())
@@ -273,7 +264,6 @@ class TestMeasureDimensionMap:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, MeasureDimensionMap):
         src = """
@@ -287,11 +277,11 @@ class TestMeasureDimensionMap:
 @pytest.fixture
 def MeasureGroup():
     from ..cache import MeasureGroup
+
     return MeasureGroup
 
 
 class TestMeasureGroup:
-
     def test_ctor(self, MeasureGroup):
         mg = MeasureGroup(name="a", caption="caption")
         xml = tostring(mg.to_tree())
@@ -300,7 +290,6 @@ class TestMeasureGroup:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, MeasureGroup):
         src = """
@@ -314,13 +303,15 @@ class TestMeasureGroup:
 @pytest.fixture
 def PivotDimension():
     from ..cache import PivotDimension
+
     return PivotDimension
 
 
 class TestPivotDimension:
-
     def test_ctor(self, PivotDimension):
-        pd = PivotDimension(measure=True, name="name", uniqueName="name", caption="caption")
+        pd = PivotDimension(
+            measure=True, name="name", uniqueName="name", caption="caption"
+        )
         xml = tostring(pd.to_tree())
         expected = """
         <dimension caption="caption" measure="1" name="name" uniqueName="name" />
@@ -328,27 +319,35 @@ class TestPivotDimension:
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 
-
     def test_from_xml(self, PivotDimension):
         src = """
         <dimension caption="caption" measure="1" name="name" uniqueName="name" />
         """
         node = fromstring(src)
         pd = PivotDimension.from_tree(node)
-        assert pd == PivotDimension(measure=True, name="name", uniqueName="name", caption="caption")
+        assert pd == PivotDimension(
+            measure=True, name="name", uniqueName="name", caption="caption"
+        )
 
 
 @pytest.fixture
 def CalculatedMember():
     from ..cache import CalculatedMember
+
     return CalculatedMember
 
 
 class TestCalculatedMember:
-
     def test_ctor(self, CalculatedMember):
-        cm = CalculatedMember(name="name", mdx="mdx", memberName="member",
-                              hierarchy="yes", parent="parent", solveOrder=1, set=True)
+        cm = CalculatedMember(
+            name="name",
+            mdx="mdx",
+            memberName="member",
+            hierarchy="yes",
+            parent="parent",
+            solveOrder=1,
+            set=True,
+        )
         xml = tostring(cm.to_tree())
         expected = """
         <calculatedMember hierarchy="yes" mdx="mdx" memberName="member" name="name" parent="parent" set="1" solveOrder="1" />
@@ -356,25 +355,31 @@ class TestCalculatedMember:
         diff = compare_xml(xml, expected)
         assert diff is None, diff
 
-
     def test_from_xml(self, CalculatedMember):
         src = """
         <calculatedMember hierarchy="yes" mdx="mdx" memberName="member" name="name" parent="parent" set="1" solveOrder="1" />
         """
         node = fromstring(src)
         cm = CalculatedMember.from_tree(node)
-        assert cm == CalculatedMember(name="name", mdx="mdx", memberName="member",
-                              hierarchy="yes", parent="parent", solveOrder=1, set=True)
+        assert cm == CalculatedMember(
+            name="name",
+            mdx="mdx",
+            memberName="member",
+            hierarchy="yes",
+            parent="parent",
+            solveOrder=1,
+            set=True,
+        )
 
 
 @pytest.fixture
 def ServerFormat():
     from ..cache import ServerFormat
+
     return ServerFormat
 
 
 class TestServerFormat:
-
     def test_ctor(self, ServerFormat):
         sf = ServerFormat(culture="x", format="y")
         xml = tostring(sf.to_tree())
@@ -383,7 +388,6 @@ class TestServerFormat:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, ServerFormat):
         src = """
@@ -397,11 +401,11 @@ class TestServerFormat:
 @pytest.fixture
 def ServerFormatList():
     from ..cache import ServerFormatList
+
     return ServerFormatList
 
 
 class TestServerFormatList:
-
     def test_ctor(self, ServerFormatList, ServerFormat):
         sf = ServerFormat(culture="x", format="y")
         l = ServerFormatList(serverFormat=[sf])
@@ -413,7 +417,6 @@ class TestServerFormatList:
         """
         diff = compare_xml(xml, expected)
         assert diff is None, diff
-
 
     def test_from_xml(self, ServerFormatList, ServerFormat):
         src = """
